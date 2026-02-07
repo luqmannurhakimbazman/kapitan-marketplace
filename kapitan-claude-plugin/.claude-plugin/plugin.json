@@ -8,7 +8,7 @@
   "repository": "https://github.com/LuqDaMan/kapitan-marketplace",
   "license": "MIT",
   "keywords": ["kapitan", "tools", "productivity", "mlx", "commit", "code-review"],
-  "agents": "./agents/",
+  "agents": ["./agents/code-reviewer.md"],
   "hooks": "./hooks/hooks.json",
   "mcpServers": "./.mcp.json"
 }
