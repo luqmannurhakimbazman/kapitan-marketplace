@@ -62,6 +62,6 @@ Defined in `kapitan-claude-plugin/.mcp.json`: context7 (npx), git (uvx), chrome-
 
 ## Installation Model
 
-**Primary (Marketplace):** Users run `/plugin marketplace add LuqDaMan/kapitan-marketplace` then `/plugin install kapitan-claude-plugin@kapitan-marketplace`. This delivers all components — commands, agents, skills, hooks, and MCP servers.
+**Primary (Marketplace):** Users run `/plugin marketplace add luqmannurhakimbazman/kapitan-marketplace` then `/plugin install kapitan-claude-plugin@kapitan-marketplace`. This delivers all components — commands, agents, skills, hooks, and MCP servers.
 
 **Legacy (Submodule):** Adding the repo as a git submodule at `.claude-plugins/kapitan` only delivers MCP servers. Commands, agents, skills, and hooks are **not** discovered via submodules. Use the marketplace approach for full functionality.

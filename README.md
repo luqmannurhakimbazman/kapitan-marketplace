@@ -18,7 +18,7 @@ A Claude Code plugin marketplace providing commands, agents, skills, hooks, and 
 ## Install
 
 ```bash
-/plugin marketplace add LuqDaMan/kapitan-marketplace
+/plugin marketplace add luqmannurhakimbazman/kapitan-marketplace
 /plugin install kapitan-claude-plugin@kapitan-marketplace
 ```
 
