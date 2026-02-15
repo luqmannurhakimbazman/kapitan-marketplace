@@ -32,6 +32,8 @@ The top-level `.claude-plugin/marketplace.json` is the marketplace registry poin
 - **`mlx-dev` skill** — Apple MLX development guide with references in `skills/mlx-dev/references/`.
 - **`doc-generator` skill** — Automated documentation generation.
 - **`ml-paper-writing` skill** — ML research paper writing assistance.
+- **`tech-blog` skill** — Technical blog post generation for Jekyll with KaTeX math and BibTeX citations.
+- **`resume-builder` skill** — Resume tailoring for specific job descriptions with ATS optimization and XYZ bullet formatting.
 
 ## Python Linting Hook
 

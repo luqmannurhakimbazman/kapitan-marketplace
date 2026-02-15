@@ -12,6 +12,8 @@ A Claude Code plugin marketplace providing commands, agents, skills, hooks, and 
 | `mlx-dev` skill | Apple MLX development guide with critical API patterns and gotchas |
 | `doc-generator` skill | Automated documentation generation |
 | `ml-paper-writing` skill | ML research paper writing assistance |
+| `tech-blog` skill | Technical blog post generation for Jekyll with KaTeX math and BibTeX citations |
+| `resume-builder` skill | Resume tailoring for specific JDs with ATS keyword optimization |
 | MCP servers | Pre-configured git, context7, gitlab, chrome-devtools, and exa integrations |
 | Python linting hook | Auto-lints `.py` files on Write/Edit using ruff (Google style + PEP 8) |
 
@@ -44,7 +46,7 @@ kapitan-marketplace/
 │   ├── .mcp.json
 │   ├── commands/          # /commit, /status
 │   ├── agents/            # code-reviewer
-│   ├── skills/            # mlx-dev, doc-generator, ml-paper-writing
+│   ├── skills/            # mlx-dev, doc-generator, ml-paper-writing, tech-blog, resume-builder
 │   ├── hooks/hooks.json   # Python linting hook
 │   └── scripts/           # Helper scripts
 └── templates/             # MCP config templates
