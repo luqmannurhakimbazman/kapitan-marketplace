@@ -14,7 +14,8 @@ A Claude Code plugin marketplace providing commands, agents, skills, hooks, and 
 | `ml-paper-writing` skill | ML research paper writing assistance |
 | `tech-blog` skill | Technical blog post generation for Jekyll with KaTeX math and BibTeX citations |
 | `resume-builder` skill | Resume tailoring for specific JDs with ATS keyword optimization |
-| MCP servers | Pre-configured git, context7, gitlab, chrome-devtools, and exa integrations |
+| `leetcode-teacher` skill | Socratic LeetCode/ML implementation teacher with evidence-based learning science |
+| MCP servers | Pre-configured git, context7, chrome-devtools, and exa (hosted endpoint via mcp-remote) integrations |
 | Python linting hook | Auto-lints `.py` files on Write/Edit using ruff (Google style + PEP 8) |
 
 ## Install
@@ -46,7 +47,7 @@ kapitan-marketplace/
 │   ├── .mcp.json
 │   ├── commands/          # /commit, /status
 │   ├── agents/            # code-reviewer
-│   ├── skills/            # mlx-dev, doc-generator, ml-paper-writing, tech-blog, resume-builder
+│   ├── skills/            # mlx-dev, doc-generator, ml-paper-writing, tech-blog, resume-builder, leetcode-teacher
 │   ├── hooks/hooks.json   # Python linting hook
 │   └── scripts/           # Helper scripts
 └── templates/             # MCP config templates

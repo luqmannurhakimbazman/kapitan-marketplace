@@ -61,7 +61,7 @@ All components are auto-discovered — create files in the right directory and t
 
 ## MCP Servers
 
-Defined in `kapitan-claude-plugin/.mcp.json`: context7 (npx), git (uvx), chrome-devtools (npx), exa (npx via mcp-remote). Two templates in `templates/`: `mcp-personal.json` (everything except gitlab) and `mcp-all.json` (everything including gitlab). Projects copy a template to their root `.mcp.json` and customize.
+Defined in `kapitan-claude-plugin/.mcp.json`: context7 (npx), git (uvx), chrome-devtools (npx), exa (bash wrapper → hosted endpoint via mcp-remote). The exa wrapper script (`scripts/exa-mcp.sh`) expands `EXA_API_KEY` at runtime since the plugin system doesn't interpolate `${ENV_VAR}` in `.mcp.json` args. Two templates in `templates/`: `mcp-personal.json` (everything except gitlab) and `mcp-all.json` (everything including gitlab). Templates use direct mcp-remote URLs. Projects copy a template to their root `.mcp.json` and customize.
 
 ## Installation Model
 
