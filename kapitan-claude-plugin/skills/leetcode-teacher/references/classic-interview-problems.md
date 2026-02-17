@@ -435,6 +435,49 @@ def is_possible(nums: list[int]) -> bool:
 
 Three core interval operations, all requiring sorted input. For greedy interval scheduling (max non-overlapping), see `greedy-algorithms.md`.
 
+### Interview Clarification Tips
+
+Before solving any interval problem, clarify with the interviewer:
+- Are intervals `[a, b]` always guaranteed to have `a < b` strictly, or can `a == b` (zero-length intervals)?
+- Do intervals `[1, 2]` and `[2, 3]` overlap? (Problem-dependent — some define overlap as sharing a point, others require a range.)
+
+### Corner Cases
+
+- No intervals (empty input)
+- Single interval
+- Two intervals (overlapping vs non-overlapping)
+- Intervals where one starts exactly where another ends (e.g., `[1, 2]` and `[2, 3]`)
+- Duplicate intervals (e.g., `[1, 3]` and `[1, 3]`)
+- One interval fully consumed by another (e.g., `[1, 5]` contains `[2, 3]`)
+- All intervals non-overlapping
+- All intervals overlapping into one merged interval
+
+### Utility Functions
+
+```python
+def is_overlap(a, b):
+    """Check if two intervals [a0, a1] and [b0, b1] overlap."""
+    return a[0] <= b[1] and b[0] <= a[1]
+
+def merge_two(a, b):
+    """Merge two overlapping intervals into one."""
+    return [min(a[0], b[0]), max(a[1], b[1])]
+```
+
+### Foundational Technique
+
+**Sort by starting point.** Nearly every interval problem begins with sorting intervals by their start value. This ensures you only need to compare each interval with the previous one (or a running state), reducing the problem from O(n^2) comparisons to O(n).
+
+### Essential & Recommended Practice Questions
+
+| Problem | Difficulty | Key Technique |
+|---------|-----------|---------------|
+| Insert Interval (57) | Medium | Binary search or linear scan to find insertion point |
+| Merge Intervals (56) | Medium | Sort + merge adjacent |
+| Meeting Rooms (252) | Easy | Sort + check any overlap |
+| Meeting Rooms II (253) | Medium | Min-heap or sweep line for concurrent meetings |
+| Non-overlapping Intervals (435) | Medium | Greedy — sort by end, count removals (see `greedy-algorithms.md`) |
+
 ### Merge Intervals (LC 56)
 
 Sort by start time. If the current interval overlaps with the previous, merge them.

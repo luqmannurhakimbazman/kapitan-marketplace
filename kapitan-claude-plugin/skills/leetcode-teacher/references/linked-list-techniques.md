@@ -4,6 +4,55 @@ Six core patterns for linked list problems. These cover the vast majority of int
 
 ---
 
+## Types of Linked Lists
+
+- **Singly linked list:** Each node has a `val` and a `next` pointer. Traversal is one-directional (head to tail).
+- **Doubly linked list:** Each node has `val`, `next`, and `prev` pointers. Traversal is bidirectional. Used in LRU Cache, browser history.
+- **Circular linked list:** The tail node points back to the head (singly or doubly). Used in round-robin scheduling, circular buffers.
+
+## Time Complexity
+
+| Operation | Singly Linked List | Notes |
+|-----------|-------------------|-------|
+| Access | O(n) | Must traverse from head |
+| Search | O(n) | Must traverse from head |
+| Insert | O(1)* | *At a known position (given pointer to predecessor) |
+| Remove | O(1)* | *At a known position (given pointer to predecessor) |
+
+## Language Implementations
+
+| Language | Implementation | Notes |
+|----------|---------------|-------|
+| C++ | `std::list` (doubly), `std::forward_list` (singly) | STL containers |
+| Java | `java.util.LinkedList` (doubly) | Implements List and Deque |
+| Python | No built-in linked list | Use `collections.deque` for deque behavior |
+
+## Corner Cases
+
+- Empty list (head is null)
+- Single node
+- Two nodes
+- Linked list has cycles (use Floyd's cycle detection — see Pattern 1)
+
+## Interview Tips
+
+- Linked lists rarely have in-place modification issues like arrays. Many operations (combine two lists, swap node values, truncate) are simple and elegant with pointer manipulation.
+- Interviewers prefer **in-place** linked list solutions (O(1) extra space). Avoid copying to an array and back.
+- Always clarify: singly or doubly linked? Circular? Are there duplicates?
+
+## Essential & Recommended Practice Questions
+
+| Problem | Difficulty | Key Technique |
+|---------|-----------|---------------|
+| Linked List Cycle (141) | Easy | Floyd's fast-slow pointers |
+| Reverse Linked List (206) | Easy | Three-pointer iterative reversal |
+| Merge Two Sorted Lists (21) | Easy | Dummy node + zipper merge |
+| Remove Nth Node From End (19) | Medium | Two-pointer with gap + dummy |
+| Reorder List (143) | Medium | Find middle + reverse + merge |
+| Merge K Sorted Lists (23) | Hard | Min-heap extension |
+
+---
+
 ## Pattern Selection Decision Tree
 
 ```

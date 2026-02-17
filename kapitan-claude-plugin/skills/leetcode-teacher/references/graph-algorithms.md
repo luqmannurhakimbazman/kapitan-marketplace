@@ -4,6 +4,123 @@ Eight graph algorithm families covering cycle detection, topological sort, union
 
 ---
 
+## Graph Representations for Interviews
+
+### Three Common Representations
+
+**1. Adjacency list** — most common in interviews for sparse graphs:
+```python
+graph = {0: [1, 2], 1: [0, 3], 2: [0], 3: [1]}
+```
+
+**2. Adjacency matrix** — useful for dense graphs or when you need O(1) edge lookups:
+```python
+matrix = [[0, 1, 1, 0], [1, 0, 0, 1], [1, 0, 0, 0], [0, 1, 0, 0]]
+```
+
+**3. Hash table of hash tables** — simplest to set up in interviews, handles weighted edges naturally:
+```python
+graph = {0: {1: 5, 2: 3}, 1: {0: 5, 3: 2}}  # {node: {neighbor: weight}}
+```
+
+### 2D Matrix as an Implicit Graph
+
+Many problems present a 2D matrix where cells are nodes and neighbors are the 4 (or 8) adjacent cells. No explicit graph construction needed — just use boundary checks:
+
+```python
+directions = [(0, 1), (0, -1), (1, 0), (-1, 0)]  # right, left, down, up
+
+def get_neighbors(r, c, rows, cols):
+    for dr, dc in directions:
+        nr, nc = r + dr, c + dc
+        if 0 <= nr < rows and 0 <= nc < cols:
+            yield nr, nc
+```
+
+## Time Complexity
+
+| Algorithm | Time | Space |
+|-----------|------|-------|
+| DFS | O(\|V\| + \|E\|) | O(\|V\|) |
+| BFS | O(\|V\| + \|E\|) | O(\|V\|) |
+| Topological Sort | O(\|V\| + \|E\|) | O(\|V\|) |
+| Dijkstra | O((\|V\| + \|E\|) log \|V\|) | O(\|V\|) |
+| Bellman-Ford | O(\|V\| \* \|E\|) | O(\|V\|) |
+
+## Interview Tips
+
+- **Always track visited nodes** to avoid infinite loops in graphs with cycles. Unlike trees, graphs can have cycles — forgetting `visited` is the most common bug.
+- A problem may **look like a tree** in the diagram but actually have cycles. Always ask: "Can there be cycles?"
+- For disconnected graphs, iterate over all nodes to ensure every component is explored.
+
+## Corner Cases
+
+- Empty graph (no nodes)
+- Graph with one or two nodes
+- Disconnected graph (multiple components)
+- Graph with cycles
+- Graph with self-loops
+- Complete graph (every node connected to every other)
+
+## Algorithm Frequency in Interviews
+
+| Frequency | Algorithms |
+|-----------|-----------|
+| **Common** | BFS, DFS |
+| **Uncommon** | Topological Sort, Dijkstra |
+| **Almost never** | Bellman-Ford, Floyd-Warshall, Prim's, Kruskal's |
+
+## DFS Template for 2D Matrix
+
+```python
+def dfs_matrix(matrix, r, c, visited):
+    """DFS on a 2D matrix with visited tracking."""
+    rows, cols = len(matrix), len(matrix[0])
+    if r < 0 or r >= rows or c < 0 or c >= cols:
+        return
+    if (r, c) in visited or matrix[r][c] == 0:  # boundary/visited/condition check
+        return
+    visited.add((r, c))
+    for dr, dc in [(0, 1), (0, -1), (1, 0), (-1, 0)]:
+        dfs_matrix(matrix, r + dr, c + dc, visited)
+```
+
+## BFS Template for 2D Matrix
+
+```python
+from collections import deque
+
+def bfs_matrix(matrix, start_r, start_c):
+    """BFS on a 2D matrix — useful for shortest path in unweighted grids."""
+    rows, cols = len(matrix), len(matrix[0])
+    visited = {(start_r, start_c)}
+    queue = deque([(start_r, start_c, 0)])  # (row, col, distance)
+
+    while queue:
+        r, c, dist = queue.popleft()
+        for dr, dc in [(0, 1), (0, -1), (1, 0), (-1, 0)]:
+            nr, nc = r + dr, c + dc
+            if 0 <= nr < rows and 0 <= nc < cols and (nr, nc) not in visited:
+                if matrix[nr][nc] != 0:  # passable cell
+                    visited.add((nr, nc))
+                    queue.append((nr, nc, dist + 1))
+```
+
+## Essential & Recommended Practice Questions
+
+| Problem | Difficulty | Key Technique |
+|---------|-----------|---------------|
+| 01 Matrix (542) | Medium | Multi-source BFS |
+| Flood Fill (733) | Easy | DFS/BFS on 2D matrix |
+| Number of Islands (200) | Medium | DFS/BFS flood fill or Union-Find |
+| Rotting Oranges (994) | Medium | Multi-source BFS with level tracking |
+| Clone Graph (133) | Medium | DFS/BFS with hash map for visited |
+| Pacific Atlantic Water Flow (417) | Medium | Reverse BFS/DFS from ocean borders |
+| Course Schedule (207) | Medium | Cycle detection (DFS or Kahn's) |
+| Alien Dictionary (269) | Hard | Build graph from char ordering + topo sort |
+
+---
+
 ## Quick Reference Table
 
 | Algorithm | Key Insight | When to Use | Complexity |

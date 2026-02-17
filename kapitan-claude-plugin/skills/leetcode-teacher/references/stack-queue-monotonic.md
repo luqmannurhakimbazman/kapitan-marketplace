@@ -4,6 +4,104 @@ Four pattern families covering stack-queue implementations, monotonic data struc
 
 ---
 
+## Stack Fundamentals
+
+A **stack** is a Last-In, First-Out (LIFO) data structure. Think of a stack of plates — you add and remove from the top.
+
+### Time Complexity
+
+| Operation | Complexity |
+|-----------|-----------|
+| Push | O(1) |
+| Pop | O(1) |
+| Peek/Top | O(1) |
+| Search | O(n) |
+| isEmpty | O(1) |
+
+### Language Implementations
+
+| Language | Implementation | Notes |
+|----------|---------------|-------|
+| C++ | `std::stack` | Adapter over deque by default |
+| Java | `java.util.Stack` or `ArrayDeque` | `ArrayDeque` preferred (not synchronized) |
+| Python | `list` (use `append`/`pop`) | Built-in list works as a stack |
+
+### Corner Cases
+
+- Empty stack (popping from empty)
+- Stack with one item
+- Stack with two items (important for problems requiring comparison of top two)
+
+### Connection to Other Concepts
+
+- **DFS** uses a stack (explicit or via recursion call stack)
+- **Recursion** is implicitly stack-based — every recursive call pushes a frame onto the call stack
+- **Undo operations** naturally map to a stack (most recent action is undone first)
+
+---
+
+## Queue Fundamentals
+
+A **queue** is a First-In, First-Out (FIFO) data structure. Think of a line at a store — first person in line is served first.
+
+### Time Complexity
+
+| Operation | Complexity |
+|-----------|-----------|
+| Enqueue | O(1) |
+| Dequeue | O(1)* |
+| Front/Peek | O(1) |
+| Search | O(n) |
+| isEmpty | O(1) |
+
+*\*O(1) with proper implementation. See interview tip below.*
+
+### Language Implementations
+
+| Language | Implementation | Notes |
+|----------|---------------|-------|
+| C++ | `std::queue` | Adapter over deque by default |
+| Java | `java.util.LinkedList` or `ArrayDeque` | Both implement Queue interface |
+| Python | `collections.deque` | **NOT** `list` — see tip below |
+
+### Interview Tip: Python Queue Performance
+
+**Using a Python `list` as a queue has O(n) dequeue** (`list.pop(0)` shifts all elements). Always use `collections.deque` which provides O(1) `popleft()`:
+
+```python
+from collections import deque
+q = deque()
+q.append(item)       # enqueue — O(1)
+q.popleft()          # dequeue — O(1), NOT list.pop(0)!
+```
+
+### Corner Cases
+
+- Empty queue (dequeuing from empty)
+- Queue with one item
+- Excessive enqueuing (memory consideration for unbounded queues)
+
+### Connection to Other Concepts
+
+- **BFS** uses a queue — process nodes level by level
+- **Rate limiting** and **task scheduling** naturally use queues
+
+## Essential & Recommended Practice Questions
+
+| Problem | Difficulty | Key Technique |
+|---------|-----------|---------------|
+| Valid Parentheses (20) | Easy | Stack for matching brackets |
+| Implement Stack using Queues (225) | Easy | Queue rotation trick |
+| Implement Queue using Stacks (232) | Easy | Two-stack amortized O(1) |
+| Min Stack (155) | Medium | Auxiliary stack tracking minimums |
+| Daily Temperatures (739) | Medium | Monotonic decreasing stack |
+| Largest Rectangle in Histogram (84) | Hard | Monotonic increasing stack |
+| Trapping Rain Water (42) | Hard | Monotonic stack or two-pointer |
+| Design Circular Queue (622) | Medium | Array with head/tail pointers |
+| Design Hit Counter (362) | Medium | Queue with timestamp expiry |
+
+---
+
 ## Quick Reference Table
 
 | Pattern | Key Insight | When to Use | Complexity |

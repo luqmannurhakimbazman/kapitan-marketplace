@@ -246,14 +246,94 @@ With a good hash function and low load factor, each bucket has ~1 entry → O(1)
 
 **Labuladong's thesis:** Binary trees are THE most important data structure. Not just one data structure among many — they are the mental model that unlocks everything else.
 
+### Common Tree Terms
+
+| Term | Definition |
+|------|-----------|
+| **Depth / Level** | Number of edges from root to the node (root is depth 0) |
+| **Height** | Number of edges on the longest path from the node to a leaf |
+| **Width** | Maximum number of nodes at any level |
+| **Degree** | Number of children a node has |
+| **Ancestor** | Any node on the path from the node to the root |
+| **Descendant** | Any node in the subtree rooted at the node |
+| **Neighbor** | Parent or child of a node |
+| **Distance** | Number of edges on the shortest path between two nodes |
+
+### Balanced vs Complete Binary Tree
+
+- **Balanced binary tree:** For every node, the height difference between left and right subtrees is at most 1. Guarantees O(log n) operations.
+- **Complete binary tree:** All levels fully filled except possibly the last, which is filled left to right. Can be stored efficiently in an array (heap property).
+
+### BST Time Complexity (Balanced)
+
+| Operation | Average | Worst (Skewed) |
+|-----------|---------|----------------|
+| Access | O(log n) | O(n) |
+| Search | O(log n) | O(n) |
+| Insert | O(log n) | O(n) |
+| Remove | O(log n) | O(n) |
+
+### Space Complexity of Traversal
+
+- **Balanced tree:** O(h) = O(log n) for recursion stack
+- **Skewed tree (like a linked list):** O(n) for recursion stack
+
+### Interview Tips for Trees
+
+- **Practice iterative traversals**, not just recursive. Interviewers often ask for iterative in-order, pre-order, or post-order traversal.
+- When summing node values, remember that **nodes can have negative values**. Don't assume all values are positive.
+- A very skewed tree behaves like a linked list — consider this edge case.
+
+### Corner Cases for Trees
+
+- Empty tree (root is null)
+- Single node tree
+- Two-node tree (root with one child)
+- Very skewed tree (all nodes are left children or all are right children — behaves like a linked list)
+
+### Common BST Routines
+
+```python
+def get_min(root):
+    """Leftmost node is the minimum in a BST."""
+    while root.left:
+        root = root.left
+    return root.val
+
+def get_max(root):
+    """Rightmost node is the maximum in a BST."""
+    while root.right:
+        root = root.right
+    return root.val
+```
+
+### Tree Techniques
+
+- **Recursion is the natural approach.** Always check the base case: `if not node: return ...`
+- **Traversing by level:** Use BFS with a queue. Process all nodes at the current level before moving to the next.
+- **When nodes can have negative values**, be careful with sum/max calculations — a subtree sum can decrease.
+
+### Essential & Recommended Tree Practice Questions
+
+| Problem | Difficulty | Key Technique |
+|---------|-----------|---------------|
+| Invert Binary Tree (226) | Easy | Recursive swap of children |
+| Maximum Depth of Binary Tree (104) | Easy | DFS/BFS depth counting |
+| Lowest Common Ancestor of BST (235) | Medium | BST property for path splitting |
+| Serialize and Deserialize Binary Tree (297) | Hard | Preorder/BFS with null markers |
+| Construct Binary Tree from Preorder and Inorder (105) | Medium | Index splitting in preorder/inorder |
+| Binary Tree Level Order Traversal (102) | Medium | BFS with level size tracking |
+| Validate BST (98) | Medium | Min/max bounds passed down recursively |
+| Kth Smallest Element in BST (230) | Medium | In-order traversal (sorted order) |
+
 ### All Advanced Data Structures Are Tree Extensions
 
 | Data Structure | Tree Connection |
 |----------------|----------------|
 | BST (Binary Search Tree) | Binary tree + left < root < right ordering |
 | Balanced BST (AVL, Red-Black) | BST + height-balance invariant |
-| Heap / Priority Queue | Complete binary tree + heap property |
-| Trie | Multi-way tree where each edge = character |
+| Heap / Priority Queue | Complete binary tree + heap property (see Heap section below) |
+| Trie | Multi-way tree where each edge = character (see Trie section below) |
 | Segment Tree | Binary tree where each node = interval aggregate |
 | B-Tree / B+ Tree | Multi-way balanced tree for disk storage |
 | Graph | Generalized tree (tree = connected acyclic graph) |
@@ -845,20 +925,120 @@ Level 0: 1  2  3  4  5  6  7  8  9
 
 **Result:** O(log N) range query and update, vs O(N) for naive approach.
 
-### Trie (Prefix Tree)
+### Heap / Priority Queue (Interview Deep Dive)
 
-**Problem:** Efficiently store and search strings, especially with shared prefixes.
+A **heap** is a complete binary tree satisfying the heap property:
+- **Min-heap:** Every parent is smaller than or equal to its children. Root is the minimum.
+- **Max-heap:** Every parent is greater than or equal to its children. Root is the maximum.
 
-**Idea:** Multi-way tree where each edge represents a character. Path from root to any node = a prefix. Shared prefixes share tree nodes.
+**For interviews, heap = priority queue.** When the problem says "priority queue", implement with a heap.
+
+#### Time Complexity
+
+| Operation | Complexity |
+|-----------|-----------|
+| Find max/min | O(1) |
+| Insert | O(log n) |
+| Remove max/min | O(log n) |
+| Heapify (build from array) | O(n) |
+
+#### Language Implementations
+
+| Language | Implementation | Notes |
+|----------|---------------|-------|
+| C++ | `std::priority_queue` | Max-heap by default |
+| Java | `java.util.PriorityQueue` | Min-heap by default |
+| Python | `heapq` module | **Min-heap only** — negate values for max-heap |
+
+#### The "Mention of K" Signal
+
+**Interview tip:** If a problem mentions "k" (top k, k closest, k most frequent), it's often a heap problem. Use a **min-heap of size k** to track the top k largest elements, or a max-heap of size k for the k smallest.
+
+#### Corner Cases
+
+- Heap with one element
+- Duplicate elements (heaps handle them naturally)
+- k = 1 (just find the max/min)
+- k = n (return all elements sorted)
+
+#### Essential & Recommended Heap Practice Questions
+
+| Problem | Difficulty | Key Technique |
+|---------|-----------|---------------|
+| K Closest Points to Origin (973) | Medium | Min-heap of size k |
+| Merge K Sorted Lists (23) | Hard | Min-heap for k-way merge |
+| Find Median from Data Stream (295) | Hard | Two heaps (max-heap + min-heap) |
+| Top K Frequent Elements (347) | Medium | Heap or bucket sort |
+| Kth Largest Element in Array (215) | Medium | Min-heap of size k or quickselect |
+
+### Trie (Prefix Tree) — Interview Deep Dive
+
+A **trie** (prefix tree) stores strings such that shared prefixes share tree nodes. Practical applications: search autocomplete, spell-check, IP routing, word games.
+
+#### Time Complexity
+
+| Operation | Complexity | Notes |
+|-----------|-----------|-------|
+| Search | O(m) | m = length of the search string |
+| Insert | O(m) | m = length of the inserted string |
+| Remove | O(m) | m = length of the removed string |
+
+#### Key Technique
+
+Preprocessing a dictionary of words into a trie improves lookup from O(n * k) (linear scan, n words of average length k) to O(m) per query (m = query length). This is especially powerful when you need to search a dictionary repeatedly.
+
+#### Corner Cases
+
+- Empty strings in the trie
+- Searching an empty trie
+- Strings that are prefixes of other strings (e.g., "app" and "apple")
+
+#### Must-Know: Implement Trie from Scratch
+
+Interviewers often ask you to implement a Trie class with `insert`, `search`, and `startsWith`:
 
 ```python
 class TrieNode:
     def __init__(self):
         self.children = {}      # char -> TrieNode
         self.is_end = False     # Marks end of a complete word
+
+class Trie:
+    def __init__(self):
+        self.root = TrieNode()
+
+    def insert(self, word):
+        node = self.root
+        for ch in word:
+            if ch not in node.children:
+                node.children[ch] = TrieNode()
+            node = node.children[ch]
+        node.is_end = True
+
+    def search(self, word):
+        node = self._find(word)
+        return node is not None and node.is_end
+
+    def starts_with(self, prefix):
+        return self._find(prefix) is not None
+
+    def _find(self, prefix):
+        node = self.root
+        for ch in prefix:
+            if ch not in node.children:
+                return None
+            node = node.children[ch]
+        return node
 ```
 
-**Result:** O(L) search/insert where L = string length. Used in autocomplete, spell-check, IP routing.
+#### Essential & Recommended Trie Practice Questions
+
+| Problem | Difficulty | Key Technique |
+|---------|-----------|---------------|
+| Implement Trie (208) | Medium | Core trie operations from scratch |
+| Word Search II (212) | Hard | Trie + backtracking on 2D grid |
+| Word Break (139) | Medium | Trie + DP (or just DP with set) |
+| Add and Search Word (211) | Medium | Trie with wildcard DFS |
 
 **Socratic prompt:** *"For each of these structures — what problem does it solve that simpler structures can't? What does it sacrifice to solve that problem?"*
 
