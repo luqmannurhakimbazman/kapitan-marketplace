@@ -1,6 +1,6 @@
 ---
 name: resume-builder
-description: This skill should be used when the user wants to tailor a resume for a specific job description. Trigger phrases include "tailor resume", "tailor my resume", "optimize resume for JD", "build resume for", "target job description", "customize resume for", "adapt resume to job", "resume for this role", "refactor resume", "update resume for", "match resume to JD", "resume for this position", or when a user pastes a job description alongside their resume. It performs keyword extraction, gap analysis, and produces a tailored LaTeX resume with detailed analysis notes.
+description: This skill should be used when the user wants to tailor a resume for a specific job description, or write a cover letter for a role. Trigger phrases include "tailor resume", "tailor my resume", "optimize resume for JD", "build resume for", "target job description", "customize resume for", "adapt resume to job", "resume for this role", "refactor resume", "update resume for", "match resume to JD", "resume for this position", "write cover letter", "cover letter for", "tailor cover letter", "draft cover letter", or when a user pastes a job description alongside their resume. It performs keyword extraction, gap analysis, and produces a tailored LaTeX resume with detailed analysis notes. It can also generate a tailored cover letter.
 ---
 
 # Resume Builder
@@ -123,6 +123,7 @@ Rules:
 3. Be honest about gaps that cannot be easily closed (e.g., "Do not list C++ if you don't know it — acknowledge it as a growth area in your cover letter instead")
 4. **Never recommend fabricating experience** — this is a strict rule across the entire skill
 5. For 🟢 Low gaps, it's acceptable to say "No action needed" if existing experience covers it sufficiently
+6. When a mitigation strategy involves addressing a gap in a cover letter, refer the candidate to Step 11 and `references/cover-letter.md` for structure and best practices
 
 ### Step 7: XYZ Bullet Optimization
 
@@ -204,6 +205,29 @@ hojicha/<company>-<role>-resume/
 **resume.tex**: Copy the master resume structure exactly, applying all modifications. Include `\documentclass[letterpaper,12pt]{fed-res}` and all original formatting. Reference `references/latex-commands.md` for the cls command reference.
 
 **Plain text verification**: After generating `resume.tex`, verify that all meaningful content is conveyed through text, not through visual layout alone. Check that: (1) no critical information relies solely on bold/italic/positioning to convey meaning, (2) all special characters render as readable text when LaTeX formatting is stripped, and (3) acronyms are expanded at least once so ATS can match both forms.
+
+### Step 11: Cover Letter (Optional)
+
+After generating the tailored resume, offer to write a cover letter if the user provided a JD. Skip this step if the user only asked for a resume.
+
+**When to offer:** Always ask after completing the resume. Cover letters are most valuable for entry-level candidates and career changers — see `references/cover-letter.md` for guidance on when they matter.
+
+**Process:**
+
+1. Follow the four-paragraph structure from `references/cover-letter.md`
+2. Map the candidate's top 2-3 experiences to JD requirements (reuse the gap analysis from Step 5)
+3. Use the same keywords identified in Step 2
+4. Address gaps identified in Step 6 where the mitigation strategy was "mention in cover letter"
+5. **Never fabricate** — the same critical rule applies. Only reference real experiences from the master resume
+
+**Output:** Save as `cover-letter.md` in the same output directory. Use Markdown (not LaTeX) since cover letters don't need the `fed-res.cls` formatting.
+
+```
+hojicha/<company>-<role>-resume/
+  notes.md         # Analysis and tailoring decisions
+  resume.tex       # Tailored resume
+  cover-letter.md  # Cover letter (if requested)
+```
 
 ---
 
