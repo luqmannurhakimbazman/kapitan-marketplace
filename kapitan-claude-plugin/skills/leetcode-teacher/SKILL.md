@@ -525,6 +525,7 @@ Generate saveable Markdown study notes with this structure:
 **Difficulty:** [Easy/Medium/Hard]
 **Pattern:** [Pattern name]
 **Date:** [Today's date]
+**Mode:** Learning
 
 ## 1. Layman Intuition
 [Real-world analogy — 2-3 sentences]
@@ -584,59 +585,90 @@ For ML implementations, add:
 
 When a Recall Mode session completes (R7 debrief), generate structured session notes:
 
-```markdown
+````markdown
 # [Problem Name] — Recall Session
 
-**Date:** [Today's date]
-**Mode:** Recall (Mock Interview)
+**Source:** [URL or description]
 **Difficulty:** [Easy/Medium/Hard]
 **Pattern:** [Pattern name]
+**Date:** [Today's date]
+**Mode:** Recall — [Full Mock Interview / Edge Cases + Complexity / Variation Challenge]
+**Verdict:** [Strong Pass / Pass / Borderline / Needs Work] — [one-sentence summary]
 
-## Reconstruction
-- **Approach identified:** [correct/incorrect/partial]
-- **Algorithm:** [what they described]
-- **Code quality:** [correct/minor bugs/major issues/not attempted]
+## 1. Reconstruction
+- **Approach identified:** [correct/partial/incorrect] — [summary of what they described]
+- **Conceptual explanation quality:** [prose assessment of how clearly they articulated the approach]
+- **Code quality:** [correct/minor bugs/major bugs/not attempted]
 
-## Edge Cases
-| Edge Case | Result |
-|-----------|--------|
-| Empty input | [caught/missed] |
-| Single element | [caught/missed] |
-| [problem-specific] | [caught/missed] |
+**User's submitted code:**
+```python
+[the raw code the user produced during reconstruction]
+```
 
-## Complexity Analysis
+**Corrections & guidance:**
+- [Bug/issue #1] → [fix and brief explanation]
+- [Bug/issue #2] → [fix and brief explanation]
+- [... additional as needed]
+
+## 2. Edge Cases
+| Edge Case | Result | Notes |
+|-----------|--------|-------|
+| Empty input | [caught/missed] | [reasoning — e.g., "Caught — correctly traced to `len(stack) == 0`"] |
+| Single element | [caught/missed] | [reasoning] |
+| [problem-specific] | [caught/missed] | [reasoning] |
+
+## 3. Complexity Analysis
 | Metric | User's Answer | Correct Answer | Result |
 |--------|--------------|----------------|--------|
 | Time | [their answer] | [correct] | [correct/incorrect] |
 | Space | [their answer] | [correct] | [correct/incorrect] |
 | Justification | [their reasoning] | — | [solid/weak/missing] |
 
-## Pattern Classification
+## 4. Pattern Classification
 - **Pattern identified:** [correct/incorrect/partial]
 - **Related problems named:** [list] ([correct count]/[total asked])
 
-## Variation Response
+## 5. Variation Response
 - **Variation posed:** [description]
 - **Adaptation:** [fluent/struggled/failed]
 - **Summary:** [what they did]
 
-## Gaps to Review
-| Gap | Correct Answer | Priority |
-|-----|---------------|----------|
-| [specific gap] | [correct answer] | [high/medium/low] |
+## 6. Gaps to Review
+| Gap | Details | Priority |
+|-----|---------|----------|
+| [specific gap] | [correct answer, explanation, or approach note] | [high/medium/low] |
 
-## Recommended Review Schedule
-- **Overall performance:** [strong/moderate/needs work]
+## 7. Recommended Review Schedule
 - **Next review:** [date based on spaced repetition]
 - **Focus areas:** [specific topics to revisit]
 
-## Mode Transitions
-[If a downshift occurred during the session:]
-- **Downshift at:** [which step, e.g., R2]
+## 8. Mode Transitions
+<!-- Include only if a downshift/upshift occurred during the session. Omit this section entirely otherwise. -->
+- **Transition:** [Downshift / Upshift] at [which step, e.g., R2]
 - **Concept gap:** [what triggered it]
-- **Resolution:** [what was taught]
+- **Resolution:** [what was taught or confirmed]
 - **Resumed:** [yes — at which step / no — switched to full learning]
+
+## Reflection Questions
+1. Which part of the solution was hardest to recall, and why?
+2. What would you do differently if this were a real interview?
+3. What's the one concept you should review before your next session?
+
+## Reference Solution
+<!-- Include only when Verdict is Borderline/Needs Work, or the user requests it. Omit otherwise. -->
+```python
+[clean, commented reference solution]
 ```
+- **Time:** O(...)
+- **Space:** O(...)
+````
+
+### Filename Convention
+
+When saving study notes, use these naming patterns for easy retrieval and spaced repetition tracking:
+
+- **Learning Mode:** `[problem-name].md` (e.g., `valid-parentheses.md`)
+- **Recall Mode:** `[problem-name]-recall-[YYYY-MM-DD].md` (e.g., `valid-parentheses-recall-2026-02-19.md`)
 
 ---
 
