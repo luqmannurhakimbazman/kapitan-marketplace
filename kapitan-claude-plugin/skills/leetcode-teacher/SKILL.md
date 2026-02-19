@@ -302,6 +302,7 @@ When the optimal solution uses a specific technique, load the matching reference
 | D&C DP, Knuth optimization, bitmask DP, O(N log N) LIS, bounded knapsack optimizations, largest zero submatrix | `dynamic-programming-advanced.md` |
 | Classic interview problems (trapping rain water, ugly numbers, intervals) | `classic-interview-problems.md` |
 | N-Sum, LRU/LFU Cache, state machine DP, subsequence DP, Dijkstra | `advanced-patterns.md` |
+| Advanced string algorithms (hashing, suffix array/automaton, Aho-Corasick, Manacher, Lyndon) | `string-algorithms-advanced.md` |
 
 When sorting is part of the optimal solution, also ask: *"Which sort would you use and why? What properties matter — stability, in-place, worst-case guarantee?"*
 
