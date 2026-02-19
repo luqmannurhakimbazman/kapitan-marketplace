@@ -43,6 +43,7 @@ LEDGER_TEMPLATE
 
   echo "=== SESSION METADATA ==="
   echo "Session ID: ${SESSION_ID}"
+  echo "Session Timestamp: $(date +%Y-%m-%dT%H:%M)"
   echo "=== END SESSION METADATA ==="
   echo "=== LEARNER PROFILE (new — first session) ==="
   cat "$PROFILE"
@@ -139,6 +140,7 @@ fi
 # --- Output session metadata ---
 echo "=== SESSION METADATA ==="
 echo "Session ID: ${SESSION_ID}"
+echo "Session Timestamp: $(date +%Y-%m-%dT%H:%M)"
 echo "=== END SESSION METADATA ==="
 
 # --- Output full profile ---

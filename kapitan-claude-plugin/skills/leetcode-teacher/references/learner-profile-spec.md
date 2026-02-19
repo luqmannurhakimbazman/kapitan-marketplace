@@ -118,7 +118,7 @@ Append-only markdown table. Never edited, never capped, never read at session st
 
 ## ISO Timestamp Format
 
-All timestamps use: `YYYY-MM-DDTHH:MM` (e.g., `2026-02-19T14:30`). No seconds, no timezone.
+All timestamps use: `YYYY-MM-DDTHH:MM` (e.g., `2026-02-19T14:30`). No seconds, no timezone. Source: `Session Timestamp` from `=== SESSION METADATA ===` (injected at session start), or from `~/.claude/leetcode-session-state.md` (after compaction), or via `date +%Y-%m-%dT%H:%M` bash fallback if neither is available.
 
 ## Session ID
 
