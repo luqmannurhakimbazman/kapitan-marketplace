@@ -28,7 +28,7 @@ The top-level `.claude-plugin/marketplace.json` is the marketplace registry poin
 
 - **`/commit`** — Conventional Commits 1.0.0 compliant commit creation with diff analysis. Explicitly forbids AI attribution footers.
 - **`/status`** — Project status overview (git state, recent changes, pending tasks).
-- **`/debug`** — Skill bug diagnosis via execution path tracing, failure pattern matching, and root cause classification.
+- **`/debug-ccskill`** — Skill bug diagnosis via execution path tracing, failure pattern matching, and root cause classification.
 - **`code-reviewer` agent** — Code review for quality, security, and performance.
 - **`mlx-dev` skill** — Apple MLX development guide with references in `skills/mlx-dev/references/`.
 - **`doc-generator` skill** — Automated documentation generation.
