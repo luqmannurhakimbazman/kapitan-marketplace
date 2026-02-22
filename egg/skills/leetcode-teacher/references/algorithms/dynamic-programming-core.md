@@ -7,7 +7,7 @@ Comprehensive DP reference covering the framework principles, subsequence/string
 - [1. DP Framework Principles](#1-dp-framework-principles)
 - [2. Subsequence & String DP](#2-subsequence--string-dp)
 - [Technique-Specific DP (Cross-References)](#technique-specific-dp-cross-references)
-- [9. Shortest Path DP: Floyd-Warshall](#9-shortest-path-dp-floyd-warshall)
+- [3. Shortest Path DP: Floyd-Warshall](#3-shortest-path-dp-floyd-warshall)
 - [Practice Questions](#practice-questions)
 
 ---
@@ -23,7 +23,7 @@ Comprehensive DP reference covering the framework principles, subsequence/string
 | Game Theory DP | `references/algorithms/game-theory-dp.md` |
 | Interval DP + Egg Drop | `references/algorithms/interval-dp.md` |
 | House Robber & Stock | `references/algorithms/stock-problems.md` |
-| Shortest Path DP (Floyd-Warshall) | This file (Section 9) |
+| Shortest Path DP (Floyd-Warshall) | This file (Section 3) |
 | Subsequence DP (quick-reference) | `references/algorithms/subsequence-dp.md` |
 | DP Framework (quick-reference) | `references/algorithms/dp-framework.md` |
 
@@ -302,7 +302,7 @@ The following DP families have been split into dedicated files for focused loadi
 
 ---
 
-## 9. Shortest Path DP: Floyd-Warshall
+## 3. Shortest Path DP: Floyd-Warshall
 
 ### All-Pairs Shortest Path
 

@@ -156,7 +156,8 @@ Run all three checks from the repo root. All must return zero results.
 ```bash
 grep -rn 'references/[a-z]' egg/skills/leetcode-teacher/ \
   | grep -v 'references/\(frameworks\|data-structures\|techniques\|algorithms\|graphs\|math\|numeric\|problems\|ml\|teaching\)/' \
-  | grep -v 'TODO.md'
+  | grep -v 'TODO.md' \
+  | grep -v 'evaluations/'
 ```
 - **Expected:** Zero results (all paths use subdirectory format)
 

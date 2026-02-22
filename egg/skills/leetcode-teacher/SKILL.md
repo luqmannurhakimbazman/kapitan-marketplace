@@ -1,6 +1,6 @@
 ---
 name: leetcode-teacher
-description: This skill should be used when the user asks to learn, practice, or be tested on coding interview problems (LeetCode, NeetCode, DSA), ML implementations, or data structures and algorithms. Common triggers include "teach me", "explain this problem", "walk me through", "help me understand", "how to solve", "coding interview", "implement [algorithm/optimizer/layer]", or providing a leetcode.com or neetcode.io URL. It also handles recall testing and mock interview modes when the user says "quiz me", "test my recall", "mock interview", or "drill me on". It acts as a Socratic teacher that guides through structured problem breakdowns with progressive hints rather than direct answers.
+description: This skill should be used when the user asks to learn, practice, or be tested on coding interview problems (LeetCode, NeetCode, DSA), ML implementations, or data structures and algorithms. Common triggers include "teach me", "explain this problem", "walk me through", "help me understand", "how to solve", "how does [data structure] work", "coding interview", "implement [algorithm/optimizer/layer]", or providing a leetcode.com or neetcode.io URL. It also handles recall testing and mock interview modes when the user says "quiz me", "test my recall", "mock interview", or "drill me on". It acts as a Socratic teacher that guides through structured problem breakdowns with progressive hints rather than direct answers.
 ---
 
 # LeetCode & ML Implementation Teacher
@@ -26,18 +26,11 @@ The goal is the ability to solve similar unseen problems independently, not fast
 
 ### The Enumeration Principle
 
-All algorithms are brute-force search made intelligent. Reframe every optimization discussion this way: the learner isn't inventing a magical new algorithm — they are finding a smarter way to enumerate. Two difficulties:
-
-1. **No omissions** — enumerate the full candidate space (this is what frameworks provide)
-2. **No redundancy** — avoid re-examining the same state (this is what DP, sliding window, pruning, etc. achieve)
-
-When a learner is stuck on optimization, ask: *"What are you enumerating? Where is the redundancy?"* This grounds abstract techniques in a concrete mental model. See `references/frameworks/algorithm-frameworks.md` for the full framework, and `references/algorithms/brute-force-search.md` for the Ball-Box Model (two perspectives of enumeration) and the 9-variant unified framework for subsets/combinations/permutations.
+All algorithms are brute-force search made intelligent. When a learner is stuck on optimization, ask: *"What are you enumerating? Where is the redundancy?"* See `references/frameworks/algorithm-frameworks.md` for the full framework (no-omissions / no-redundancy) and `references/algorithms/brute-force-search.md` for the Ball-Box Model and unified subsets/combinations/permutations framework.
 
 ### The Binary Tree Lens
 
-Labuladong's insight: binary trees are THE foundational mental model. All advanced data structures (BSTs, heaps, tries, segment trees, graphs) are tree extensions, and all brute-force algorithms (backtracking, BFS, DP, divide-and-conquer) walk implicit trees. When a learner struggles with any recursive or data-structure problem, bring them back to tree thinking: *"Draw the recursion tree. What does each node represent?"*
-
-This means mastering binary tree traversal (pre-order, in-order, post-order positions) unlocks everything else. See `references/frameworks/algorithm-frameworks.md` for the Binary Tree Centrality section and `references/data-structures/data-structure-fundamentals.md` for how each data structure connects to trees.
+Binary trees are THE foundational mental model — all advanced data structures are tree extensions and all brute-force algorithms walk implicit trees. When a learner struggles with any recursive or data-structure problem, ask: *"Draw the recursion tree. What does each node represent?"* See `references/frameworks/algorithm-frameworks.md` for the Binary Tree Centrality section.
 
 ### When the User Asks "Just Give Me the Answer"
 
@@ -150,15 +143,7 @@ Before giving any hint, verify it does not name the specific data structure or a
 
 ### The Recursion Unifier
 
-When a learner encounters any recursive problem (trees, backtracking, DP, divide and conquer), use tree thinking as a Socratic tool:
-
-> "Every recursive function walks a tree. Each node is a function call; children are the recursive subcalls. Let's draw your recursion tree."
-
-Then guide them to identify the mode:
-- **Traversal mode** (backtracking): "Are you collecting state as you walk down? Do you need to undo choices?" → Use external variables, pre-order = choose, post-order = unchoose.
-- **Decomposition mode** (DP/divide-and-conquer): "Can each subtree return its own answer for the parent to combine?" → Use return values, post-order combination.
-
-This single lens unifies backtracking, tree DP, merge sort, quick sort, and divide-and-conquer under one mental model. See `references/frameworks/algorithm-frameworks.md` for the full framework.
+When a learner encounters any recursive problem, ask: *"Every recursive function walks a tree. Are you collecting state walking down (traversal mode → backtracking) or combining return values coming up (decomposition mode → DP/divide-and-conquer)?"* See `references/frameworks/algorithm-frameworks.md` for the full traversal vs. decomposition framework.
 
 ---
 
@@ -257,8 +242,12 @@ Track internally:
 | Sliding window | `references/algorithms/sliding-window.md` |
 | String manipulation | `references/techniques/string-techniques.md` |
 | Binary search | `references/algorithms/binary-search-framework.md` |
-| BFS/DFS | `references/graphs/graph-algorithms.md` |
+| BFS/DFS (graph) | `references/graphs/graph-algorithms.md` |
+| BFS/DFS (non-graph) | `references/algorithms/bfs-framework.md` |
+| Sorting | `references/algorithms/sorting-algorithms.md` |
+| State machine | `references/algorithms/state-machine.md` |
 | DP (general) | `references/algorithms/dynamic-programming-core.md` |
+| DP (intro/framework) | `references/algorithms/dp-framework.md` |
 | Knapsack DP | `references/algorithms/knapsack.md` |
 | Grid/Path DP | `references/algorithms/grid-dp.md` |
 | Game theory DP | `references/algorithms/game-theory-dp.md` |
@@ -270,6 +259,7 @@ Track internally:
 | Greedy | `references/algorithms/greedy-algorithms.md` |
 | Interval scheduling | `references/algorithms/interval-scheduling.md` |
 | Jump game | `references/algorithms/jump-game.md` |
+| Gas station / video stitching | `references/algorithms/gas-station.md` |
 | Backtracking | `references/algorithms/backtracking.md` |
 | Divide and conquer | `references/algorithms/divide-and-conquer.md` |
 | Tree | `references/data-structures/data-structure-fundamentals.md` |
