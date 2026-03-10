@@ -1,6 +1,14 @@
 ---
 name: dln
-description: This skill should be used when the user wants to learn a new domain from scratch using structured cognitive phases, or when they say "dln", "learn [domain]", "teach me [domain] from zero", "cold-start [domain]", "start learning [domain]", or reference the Dot-Linear-Network framework. It orchestrates three phase skills (dln-dot, dln-linear, dln-network) based on the learner's current phase stored in a Notion database, routing them to the appropriate learning protocol for their level of understanding.
+description: >
+  This skill should be used when the user wants to learn a new domain from scratch
+  using structured cognitive phases, or when they say "dln", "dln list",
+  "dln reset [domain]", "learn [domain]", "teach me [domain] from zero",
+  "cold-start [domain]", "start learning [domain]", or reference the
+  Dot-Linear-Network framework. It orchestrates three phase skills (dln-dot,
+  dln-linear, dln-network) based on the learner's current phase stored in a Notion
+  database, routing them to the appropriate learning protocol for their level of
+  understanding.
 ---
 
 # DLN Learn — Domain-Agnostic Learning Orchestrator
@@ -102,7 +110,7 @@ Use the Notion MCP to query the DLN Profiles database for a row matching the dom
 
 **If found:** Read the current Phase, Session Count, and page body content.
 
-**Migration check:** If the page body is empty but the column properties Concepts, Chains, Factors, Compressed Model, or Open Questions contain data, perform a one-time migration:
+**Migration check (temporary — remove once all profiles are confirmed migrated):** If the page body is empty but the column properties Concepts, Chains, Factors, Compressed Model, or Open Questions contain data, perform a one-time migration:
 1. Write the page body initialization template
 2. Copy each populated column property into the corresponding Knowledge State section
 3. Clear the migrated column properties
@@ -139,9 +147,7 @@ Pass the following context to the phase skill:
 
 Use the Skill tool to invoke the appropriate phase skill (`dln-dot`, `dln-linear`, or `dln-network`).
 
-### Step 6: Post-Session Update
-
-After the phase skill completes (session ends), the phase skill itself handles writing back to Notion. The orchestrator does not need to do additional write-back.
+After the phase skill completes, no additional write-back is needed — the phase skill handles all Notion persistence.
 
 ---
 
