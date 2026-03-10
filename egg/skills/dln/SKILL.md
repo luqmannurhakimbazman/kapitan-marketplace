@@ -32,17 +32,45 @@ All learner state is persisted in the **DLN Profiles** database in Notion (under
 
 ### Schema
 
+#### Column Properties (queryable metadata)
+
 | Property | Type | Purpose |
 |----------|------|---------|
 | Domain | title | The learning domain (e.g., "Options Pricing") |
 | Phase | select | Current phase: Dot, Linear, or Network |
-| Concepts | rich text | Nodes learned (Dot phase output) |
-| Chains | rich text | Procedural sequences built (Dot phase output) |
-| Factors | rich text | Shared structures discovered (Linear phase output) |
-| Compressed Model | rich text | Latest model statement (Network phase output) |
-| Open Questions | rich text | Unresolved gaps |
 | Last Session | date | Timestamp of most recent session |
-| Session Count | number | Total sessions in this domain |
+| Session Count | number | Total sessions in this domain (authoritative source) |
+
+#### Page Body (learning content)
+
+All learning content lives in the domain page body, not column properties. The page body has two sections:
+
+**Knowledge State** — Persistent header updated at every teaching boundary. Contains:
+- `## Concepts` — Concept nodes learned (Dot phase output)
+- `## Chains` — Procedural sequences built (Dot phase output)
+- `## Factors` — Shared structures discovered (Linear phase output)
+- `## Compressed Model` — Latest model statement (Network phase output)
+- `## Open Questions` — Unresolved gaps
+
+**Session Logs** — Dated sections appended below Knowledge State by each phase skill. Contains session plan, progress notes, and plan adjustments. Old session logs are kept for audit but are NOT read back during mid-session syncs.
+
+#### Page Body Initialization Template
+
+When creating a new domain profile, write this skeleton to the page body:
+
+~~~
+# Knowledge State
+
+## Concepts
+
+## Chains
+
+## Factors
+
+## Compressed Model
+
+## Open Questions
+~~~
 
 ---
 
@@ -62,39 +90,52 @@ If no domain is specified, ask: *"What domain would you like to learn? Give me a
 
 **`list`** — Query the DLN Profiles database and display all domains with their current phase, session count, and last session date in a table.
 
-**`reset [domain]`** — Find the matching row and update Phase back to Dot, clear Concepts/Chains/Factors/Compressed Model/Open Questions, reset Session Count to 0. Confirm with the user before executing.
+**`reset [domain]`** — Find the matching row. Confirm with the user before executing. Then:
+1. Replace the page body with the initialization template (clearing all Knowledge State and session logs)
+2. Set Phase back to Dot
+3. Reset Session Count to 0
+4. Clear Last Session
 
 ### Step 3: Query or Create Profile
 
 Use the Notion MCP to query the DLN Profiles database for a row matching the domain name.
 
-**If found:** Read the current Phase and all accumulated knowledge fields.
+**If found:** Read the current Phase, Session Count, and page body content.
+
+**Migration check:** If the page body is empty but the column properties Concepts, Chains, Factors, Compressed Model, or Open Questions contain data, perform a one-time migration:
+1. Write the page body initialization template
+2. Copy each populated column property into the corresponding Knowledge State section
+3. Clear the migrated column properties
+4. Inform the user: *"Migrated your [domain] profile to the new page-based format."*
 
 **If not found:** Create a new row with:
 - Domain = parsed domain name
 - Phase = Dot
 - Session Count = 0
-- All text fields empty
+
+Then write the page body initialization template (see Schema section above) to the new page.
 
 Tell the user: *"New domain detected. Starting you in the Dot phase — we'll build your foundational concepts first."*
 
 ### Step 4: Load Context and Route
 
-Read the relevant fields based on current phase:
+Read the **full page body** of the domain's Notion page. Pass it to the phase skill along with the Phase and Session Count from column properties.
 
-| Phase | Fields to Load | Route To |
-|-------|---------------|----------|
-| Dot | Concepts, Chains, Open Questions | `dln-dot` skill |
-| Linear | Concepts, Chains, Factors, Open Questions | `dln-linear` skill |
-| Network | Factors, Compressed Model, Open Questions | `dln-network` skill |
+The phase skill ignores sections irrelevant to its phase — no phase-specific filtering at the orchestrator level.
+
+| Phase | Route To |
+|-------|----------|
+| Dot | `dln-dot` skill |
+| Linear | `dln-linear` skill |
+| Network | `dln-network` skill |
 
 ### Step 5: Invoke Phase Skill
 
 Pass the following context to the phase skill:
 1. **Domain name**
-2. **Accumulated knowledge** (from the fields loaded in Step 4)
-3. **Session count** (so the phase skill knows if this is the first session or a continuation)
-4. **Database reference** (so the phase skill can write back updates)
+2. **Page body content** (full page body from Step 4)
+3. **Session count** (from Session Count column property — authoritative source)
+4. **Page reference** (so the phase skill can write back to the page body)
 
 Use the Skill tool to invoke the appropriate phase skill (`dln-dot`, `dln-linear`, or `dln-network`).
 
@@ -119,3 +160,4 @@ Phase transitions are handled by the phase skills themselves:
 - **Notion unavailable:** Tell the user Notion is unreachable and offer to run the session without persistence (phase skill still works, just no state saved).
 - **Multiple domain matches:** If the query returns multiple rows, show them and ask the user to clarify.
 - **Phase skill not found:** This shouldn't happen in normal operation. If it does, report the error and suggest the user check their plugin installation.
+- **Notion fails mid-session:** Phase skills delegate all Notion I/O to the `dln-sync` agent. If `dln-sync` returns with a failure status, the phase skill logs the intended update in-conversation, queues failed writes for the next dispatch, and falls back to in-conversation-only tracking if 3+ consecutive dispatches fail. See phase skill instructions for details.
