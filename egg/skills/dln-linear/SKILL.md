@@ -20,16 +20,73 @@ A factor is a principle that explains why multiple chains work, stated without d
 
 ## 2. Session Flow
 
-### Step 1: Warm-Up
+### Step 0: Session Plan Write
 
-Present a new problem in the learner's domain. Let them attempt it using their existing chains. Observe:
+Before any teaching begins, **dispatch the `dln-sync` agent** with action `plan-write` and the following plan content:
+
+```
+---
+
+## Session [N] — [date] (Linear Phase)
+
+### Plan
+- Chains to compare: [which chains from Knowledge State will be juxtaposed]
+- Target factors: [hypothesized shared structures to discover]
+- Upgrade operator goals: [Dot→Linear question upgrades to practice]
+- Priorities: [reinforcement needs from previous sessions]
+
+### Progress
+(populated by sync loop)
+```
+
+The agent writes the plan and returns a re-anchor payload. Teach from the returned payload.
+
+### Sync Loop (runs at every teaching boundary)
+
+After each of the following boundaries, **dispatch a fresh `dln-sync` agent** with action `sync`:
+- After each cross-pollination comparison
+- After each factor hypothesis + precision rating
+- After each upgrade operator round
+- Before and after the phase gate
+
+**Dispatch payload** — include in the agent prompt:
+- Progress notes to append (append-only):
+```
+- Cross-pollination [Chain A vs Chain B] — learner identified [shared structure / missed it]. Precision: [vague/structural/transferable].
+- Factor hypothesis: "[learner's stated factor]" — rating: [vague/structural/predictive]. [Notes on precision pushback.]
+- Upgrade operator: converted [Dot question] → [Linear question]. [Success/needed guidance.]
+```
+- Knowledge State updates: confirmed factors for `## Factors`, parked Network-level questions for `## Open Questions`
+- Any queued writes from previous failed syncs
+
+**On agent return** — use the re-anchor payload to deliver a **visible checkpoint**:
+
+> "Quick checkpoint: we've discovered [N] factors so far — [factor names]. Next we'll compare [Chain X] with [Chain Y] to look for more shared structure."
+
+#### Plan Adjustment
+
+If the re-anchor payload reveals drift, include a **plan adjustment** in the next `dln-sync` dispatch:
+
+```
+### Plan Adjustment — [reason]
+- Reordering: [what changed and why]
+- Deferred: [what's pushed to next session]
+```
+
+#### Notion Failure Handling
+
+Same as Dot phase: log in-conversation, queue writes in next dispatch, fall back after 3+ consecutive failures.
+
+### Step 2: Warm-Up
+
+Present a new problem in the learner's domain. Use the Chains from the Knowledge State to inform problem selection — pick a scenario where existing chains should apply but might break or feel clunky. Let them attempt it using their existing chains. Observe:
 - Where does their procedural knowledge break?
 - Where does it get clunky or over-specific?
 - Which chain do they reach for, and why?
 
 Do not correct mistakes yet. The goal is to surface the *limits* of chain-level thinking.
 
-### Step 2: Cross-Pollination
+### Step 3: Cross-Pollination
 
 Take two chains the learner knows and ask:
 
@@ -37,7 +94,7 @@ Take two chains the learner knows and ask:
 
 Use the cross-pollination question templates from `@references/linear-protocol.md`. Guide them to see the shared factor by progressively stripping domain-specific details. If they struggle, narrow the comparison — point to a specific step in each chain and ask what role it plays.
 
-### Step 3: Factor Hypothesis
+### Step 4: Factor Hypothesis
 
 Ask the learner to state the shared factor as a principle. Push for precision:
 
@@ -48,7 +105,7 @@ Use the factor hypothesis prompts from `@references/linear-protocol.md`. A good 
 - **Transferable** — it applies beyond the two chains that generated it.
 - **Predictive** — it can forecast outcomes in unseen problems.
 
-### Step 4: Upgrade Operator Practice
+### Step 5: Upgrade Operator Practice
 
 Show how recognizing the factor transforms the *type* of questions the learner can ask:
 
@@ -58,7 +115,7 @@ Show how recognizing the factor transforms the *type* of questions the learner c
 
 Use the upgrade operator examples from `@references/linear-protocol.md`. The learner should practice converting their own Dot questions into Linear questions.
 
-### Step 5: Phase Gate
+### Step 6: Phase Gate
 
 Test whether the learner can:
 
@@ -94,14 +151,14 @@ Capture their response. This self-reflection surfaces blind spots and seeds the 
 
 ## 5. Notion Write-Back
 
-At session end, update the learner's row in the **DLN Profiles** database:
+Most write-back happens continuously via `dln-sync` dispatches. At session end, dispatch `dln-sync` with action `session-end` including:
 
-- **Database ID:** `1f889a62f3414c17afb1c71a883a78d3`
-- **Data Source:** `collection://7d60b0fb-2a0a-473d-bd58-305e84fd0851`
+| Target | Field | Action |
+|--------|-------|--------|
+| Column property | Last Session | Set to today's date |
+| Column property | Session Count | Increment by 1 |
+| Column property | Phase | Set to **Network** if phase gate passed |
+| Page body | Knowledge State | Verify Factors and Open Questions are complete |
+| Page body | Current session Progress | Append final status and exit ritual response |
 
-Fields to update:
-- **Factors:** Append new factors discovered during the session.
-- **Open Questions:** Update with any parked Network-level questions.
-- **Last Session:** Set to today's date.
-- **Session Count:** Increment by 1.
-- **Phase:** Set to **Network** if the phase gate was passed.
+Database IDs are handled by the `dln-sync` agent — phase skills do not need them.
