@@ -16,6 +16,64 @@ description: |
 
 ## Session Flow (Distributed Revision Cycle)
 
+### 0. Session Plan Write
+
+Before asking for the learner's model, **dispatch the `dln-sync` agent** with action `plan-write` and the following plan content:
+
+```
+---
+
+## Session [N] — [date] (Network Phase)
+
+### Plan
+- Starting model: [will be captured in Step 1]
+- Planned stress-tests: [edge cases, counterexamples, or cross-domain analogies to probe]
+- Transfer domains: [adjacent domains to test model generality]
+- Open questions from last session: [carry forward from Knowledge State]
+
+### Progress
+(populated by sync loop)
+```
+
+The agent writes the plan and returns a re-anchor payload. Use the Knowledge State from the payload to inform stress-test selection.
+
+### Sync Loop (runs at every teaching boundary)
+
+After each of the following boundaries, **dispatch a fresh `dln-sync` agent** with action `sync`:
+- After state model capture (Step 1)
+- After each stress-test round (Step 2)
+- After each contraction attempt (Step 4)
+- After the transfer test (Step 5)
+
+**Dispatch payload** — include in the agent prompt:
+- Progress notes to append (append-only):
+```
+- State model captured: "[verbatim model]"
+- Stress-test [N]: [edge case presented] → model [held/broke]. [What was missing.]
+- Contraction [N]: model revised — [word count before] → [word count after]. Coverage: [broader/same/narrower].
+- Transfer test: [adjacent domain] → model [transferred successfully / broke at X].
+```
+- Knowledge State updates: replace `## Compressed Model` with latest revision, append new factors to `## Factors`, update `## Open Questions` with remaining gaps
+- Any queued writes from previous failed syncs
+
+**On agent return** — use the re-anchor payload to deliver a **visible checkpoint**:
+
+> "Quick checkpoint: your model has been revised [N] times this session. Current compression: [word count]. It [held/broke] on [last stress-test]. Next: [what's coming]."
+
+#### Plan Adjustment
+
+If stress-tests reveal unexpected weaknesses, include a **plan adjustment** in the next `dln-sync` dispatch:
+
+```
+### Plan Adjustment — [reason]
+- Adding stress-tests: [new edge cases to probe]
+- Shifting transfer domain: [original] → [new target]
+```
+
+#### Notion Failure Handling
+
+Same as other phases: log in-conversation, queue writes in next dispatch, fall back after 3+ consecutive failures.
+
 ### 1. State Model
 
 Ask the learner to state their current compressed model of the domain.
@@ -75,23 +133,23 @@ At this phase, the learner should be operating at the **model level**, not the c
 
 ## Tracking (No Phase Gate)
 
-Network is the terminal phase. There is no gate to pass. Instead, track three metrics each session:
+Network is the terminal phase. There is no gate to pass. The sync loop tracks three metrics at each boundary:
 
-- **Revision count** — How many times the model has been revised this session
-- **Compression quality** — Is the model getting shorter while covering more? Use the rubric from `@references/network-protocol.md`
-- **Transfer success** — Did the model work on adjacent domains?
+- **Revision count** — How many times the model has been revised this session (visible in Progress notes)
+- **Compression quality** — Is the model getting shorter while covering more? Use the rubric from `@references/network-protocol.md`. Tracked via word counts in contraction progress notes.
+- **Transfer success** — Did the model work on adjacent domains? Tracked in transfer test progress notes.
 
 ## Notion Write-Back
 
-At session end, update the DLN Profiles database row for this learner:
+Most write-back happens continuously via `dln-sync` dispatches. At session end, dispatch `dln-sync` with action `session-end` including:
 
-| Field | Action |
-|-------|--------|
-| Compressed Model | Replace with the latest revised model |
-| Open Questions | Update with remaining gaps from the exit ritual |
-| Factors | Append any new factors discovered during stress-testing |
-| Last Session | Set to today's date |
-| Session Count | Increment by 1 |
+| Target | Field | Action |
+|--------|-------|--------|
+| Column property | Last Session | Set to today's date |
+| Column property | Session Count | Increment by 1 |
+| Page body | Knowledge State | Verify Compressed Model, Factors, and Open Questions reflect final state |
+| Page body | Current session Progress | Append exit ritual summary (starting model, what broke, revised model, open questions) |
 
-**Database ID:** `1f889a62f3414c17afb1c71a883a78d3`
-**Data Source:** `collection://7d60b0fb-2a0a-473d-bd58-305e84fd0851`
+No Phase column update — Network is the terminal phase.
+
+Database IDs are handled by the `dln-sync` agent — phase skills do not need them.
