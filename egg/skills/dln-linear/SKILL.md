@@ -59,6 +59,12 @@ Before any teaching begins, **dispatch the `dln-sync` agent** with action `plan-
 
 The agent writes the plan and returns a re-anchor payload. Teach from the returned payload.
 
+#### Syllabus Context
+
+Read the `## Syllabus` section from the page body. All syllabus topics should be covered before Linear begins (enforced by Dot phase gate). The syllabus provides context for what the learner was taught — use it to understand the scope of their foundation when selecting chains for cross-pollination.
+
+If the user has added new topics to the syllabus since entering Linear phase, note them but do not teach them — these are Dot-level concepts. Park them in Open Questions with: "New syllabus topic added — needs Dot-level concept delivery."
+
 ### Step 0a: Retrieval Warm-Up
 
 Run this after the session plan write but BEFORE the warm-up problem (Step 1). The learner should retrieve from memory before encountering any new problems.
