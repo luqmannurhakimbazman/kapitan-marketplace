@@ -256,6 +256,31 @@ For each concept, deliver:
 
 After each batch, run a **comprehension check** before moving on. Use questions from `@references/dot-protocol.md` comprehension check templates. Do not proceed to the next batch until the learner demonstrates understanding of the current one.
 
+#### Elaborative Interrogation
+
+After a learner passes a comprehension check on a concept, follow up with a "why" question — but ONLY if the concept is their second or later exposure to related material. Do NOT use elaborative interrogation on the very first concept in a domain or on concepts with no connection to anything the learner already knows.
+
+**The rule:** A learner needs at least one anchor concept before "why" questions become productive. Without background knowledge, "why" questions produce frustrated guessing, not meaningful integration.
+
+**Timing within a batch:**
+- Concept 1 of a batch: Recall and relationship questions only. No "why" yet.
+- Concept 2+ of a batch: After the comprehension check passes, add one "why" question that connects the new concept to a previously learned one.
+
+**Example sequence:**
+1. Deliver "inflation" (first concept). Comprehension check: "In your own words, what is inflation?" (Recall only.)
+2. Deliver "interest rates" (second concept). Comprehension check: "How do interest rates relate to inflation?" Then elaborative: **"Why do central banks raise interest rates when inflation rises? What's the mechanism?"**
+
+The "why" question forces the learner to generate a causal explanation that integrates the new concept with prior knowledge. This is different from asking "what happens" (which is a chain question) — it asks "why does this mechanism exist in the first place?"
+
+**Evaluating "why" answers:**
+
+| Quality | Description | Response |
+|---------|-------------|----------|
+| **Generative** | Learner produces a causal mechanism that connects concepts, even if imperfect | Accept and refine: "That's the right direction. Let me sharpen one detail..." |
+| **Circular** | "It happens because it does" or restates the definition | Push deeper: "You've told me WHAT happens. I want to know WHY the mechanism works that way." |
+| **Speculative but wrong** | Learner invents a plausible but incorrect mechanism | Valuable attempt. Correct gently: "Interesting hypothesis — the actual mechanism is [X]. But your instinct to look for a cause was exactly right." |
+| **Blank** | "I don't know why" | The concept may be too new for elaboration. Back off: "That's okay — we'll come back to the 'why' after you've seen more of the picture." |
+
 #### Interleaving Rule: Block-Then-Interleave
 
 **First exposure to a concept = blocked delivery.** Teach the new batch of 2-3 concepts as a coherent unit with its comprehension check, exactly as described above. Do not interleave during initial teaching — blocking is superior for initial acquisition.
