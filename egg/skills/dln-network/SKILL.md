@@ -117,6 +117,26 @@ Ask the learner to state their current compressed model of the domain **from mem
 
 Record this verbatim as the **starting model**. Do not correct it yet. Do not add to it.
 
+#### Model Visualization
+
+After capturing the learner's verbal model, render it as a concept map showing the relationships between factors:
+
+```mermaid
+graph TD
+    M1[Core Principle] --> M2[Factor A]
+    M1 --> M3[Factor B]
+    M2 --> M4[Prediction 1]
+    M3 --> M4
+    M3 --> M5[Prediction 2]
+    M2 -.->|"tension"| M3
+```
+
+Use solid arrows for causal/supporting relationships and dotted arrows for tensions or trade-offs within the model.
+
+> "Here's your model as a map. Does this capture what you meant? Are there connections I'm missing or connections I added that you don't actually claim?"
+
+This externalization often reveals implicit assumptions — connections the learner intended but didn't state, or connections they'd reject when seeing them visually.
+
 **Then compare silently** against the Compressed Model in Knowledge State:
 - What principles did they retain?
 - What was lost or distorted?
@@ -209,6 +229,16 @@ Ask the learner to revise their model incorporating the new insight.
 > "Now update your model. Can you make it shorter while covering more?"
 
 Push for **compression** — fewer words, more coverage. The goal is a model that is more powerful AND more concise than the starting model. If the revised model is longer, challenge the learner to find redundancies.
+
+#### Visual Compression
+
+After the learner revises their model, render the new version as a concept map and compare it visually to the pre-revision map:
+
+> "Your model went from [N] nodes and [M] connections to [N'] nodes and [M'] connections. Here's the before and after:"
+
+Render both diagrams. The visual makes compression tangible — fewer boxes, fewer arrows, same or better coverage. If the revised model has MORE nodes than the original, the visual makes the bloat obvious without needing to argue about it.
+
+> "Your revised model has more boxes than before. Can you merge any of these? Which two nodes could become one?"
 
 ### 5. Transfer Test
 
