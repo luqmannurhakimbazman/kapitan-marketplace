@@ -334,3 +334,55 @@ Use for the Step 2a interleaved practice round.
 4. Application question — old concept from last session
 5. "Which concept applies?" — scenario where multiple could fit
 6. Combination question — requires both old and new concepts
+
+## 10. Cognitive Load Management
+
+### Complexity Estimation Heuristic
+
+Before teaching a concept, mentally count the number of **prerequisite elements** the learner must hold simultaneously:
+
+**Count these as elements:**
+- Each new term or definition the learner hasn't seen before
+- Each relationship to another concept (A affects B = 1 element)
+- Each condition or exception ("except when X" = 1 element)
+- Each step in a procedure
+
+**Examples:**
+- "A stock is a share of ownership in a company" — 2 elements (stock, ownership share). **Low complexity.**
+- "When interest rates rise, bond prices fall because the fixed coupon becomes less attractive relative to new bonds" — 5 elements (interest rates, bond prices, inverse relationship, fixed coupon, relative attractiveness). **High complexity.**
+- "Delta measures how much an option's price changes per $1 change in the underlying, and it ranges from 0 to 1 for calls, is affected by moneyness, time to expiry, and volatility" — 7+ elements. **Very high complexity. Deliver alone, with worked example.**
+
+### Batch Sizing Decision Table
+
+| Learner's Recent Performance | Concept Complexity | Batch Size |
+|-----------------------------|-------------------|------------|
+| All comp checks passed first try | Low | 4 |
+| All comp checks passed first try | Medium | 3 |
+| All comp checks passed first try | High | 1-2 |
+| Mixed (some passed, some needed re-teach) | Low | 3 |
+| Mixed | Medium | 2 |
+| Mixed | High | 1 |
+| Multiple failures or overload signals | Any | 1 |
+
+### Faded Worked Example Progression
+
+When overload is detected, use this scaffolding sequence:
+
+**Level 1 — Fully Worked:**
+> "Here's how this works in practice: [complete walkthrough]. Notice how [concept] applied at [step]."
+
+**Level 2 — Partially Faded:**
+> "Here's a similar scenario: [setup]. I'll walk through the first part: [steps 1-2]. Now you take over — what happens next?"
+
+**Level 3 — Minimally Scaffolded:**
+> "New scenario: [setup]. Walk me through it from the start. I'll only step in if you get stuck."
+
+### Expertise Reversal Warning
+
+As the learner progresses through the Dot phase and accumulates concepts, techniques appropriate for early sessions can become counterproductive:
+
+- **Sessions 1-2:** Full analogies, detailed definitions, faded examples are helpful.
+- **Sessions 3-5:** If the learner is performing well, reduce analogy detail. Over-explaining concepts the learner already grasps wastes time and can feel patronizing.
+- **Sessions 5+:** If still in Dot phase, the learner has likely mastered some concepts but struggles with others. Adapt per-concept, not per-session. Use full scaffolding only for the specific concepts causing difficulty.
+
+Signal for expertise reversal: the learner answers comprehension checks BEFORE you finish asking, or says "Yeah, I know" during concept delivery. When this happens, accelerate through familiar material and focus time on the gap concepts.
