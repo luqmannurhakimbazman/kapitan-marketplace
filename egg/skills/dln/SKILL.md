@@ -105,11 +105,13 @@ Sort the table with overdue domains first (most overdue at top), then due today,
 
 Example output:
 
-| Domain | Phase | Sessions | Last Session | Review Status |
-|--------|-------|----------|-------------|---------------|
-| Options Pricing | Linear | 7 | 2026-03-05 | ⚠ 4 days overdue |
-| Compiler Design | Dot | 3 | 2026-03-10 | Due today |
-| Immunology | Network | 12 | 2026-03-09 | In 5 days |
+| Domain | Phase | Sessions | Last Session | Coverage | Review Status |
+|--------|-------|----------|-------------|----------|---------------|
+| Options Pricing | Linear | 7 | 2026-03-05 | 14/16 (88%) | ⚠ 4 days overdue |
+| Compiler Design | Dot | 3 | 2026-03-10 | 5/12 (42%) | Due today |
+| Immunology | Network | 12 | 2026-03-09 | 20/20 (100%) | In 5 days |
+
+If no syllabus exists for a domain, show "No syllabus" in the Coverage column.
 
 **`reset [domain]`** — Find the matching row. Confirm with the user before executing. Then:
 1. Replace the page body with the initialization template from `@references/init-template.md` (clearing all Knowledge State and session logs)
@@ -197,9 +199,50 @@ After each session completes (regardless of whether a review protocol ran), comp
 
 Pass the computed Next Review and Review Interval values to the `dln-sync` agent in the `session-end` dispatch as column_updates.
 
+### Step 3b: Syllabus Check
+
+After loading the profile and running any review check, inspect the `## Syllabus` section in the page body.
+
+**If the `## Syllabus` section is empty or contains only the placeholder goal:**
+
+1. Tell the user: "No syllabus exists for this domain yet. Let me research and generate one based on your learning goal."
+2. Spawn the `dln-syllabus` subagent via the **Agent tool**, passing in the prompt:
+   - Domain name
+   - The user's original goal prompt (from when they first created this domain, or ask them now)
+   - Page ID for writing the syllabus to Notion
+3. The subagent runs in its own context window — it does all web search, context7 lookups, and domain research there. Only the final topic list returns to the main session. This keeps the teaching context clean.
+4. When the subagent returns, present the topic list to the user for review:
+
+> "Here's the syllabus I've generated for **[domain]** based on your goal:
+>
+> - Topic A
+> - Topic B
+> - Topic C
+> - ...
+>
+> **[N] topics total.** Add, remove, or edit anything before we start. You can also edit this anytime in Notion."
+
+5. Apply the user's edits. If they request changes, update the `## Syllabus` section in Notion directly from the orchestrator (this is cheap — just text manipulation, no research needed).
+6. If the subagent fails or the user declines, proceed without a syllabus. The orchestrator skips coverage reporting. The syllabus can be generated in a future session.
+
+**If the `## Syllabus` section has topics:**
+
+Compute and display coverage stats before routing to the phase skill:
+
+> **Syllabus Progress:**
+> - Coverage: [N]/[M] topics covered ([percentage]%)
+> - Mastery: [X] mastered, [Y] partial, [Z] not-mastered
+> - Uncovered: [list of unchecked topics with no concepts yet]
+
+A topic is *covered* when at least one concept in `## Concepts` has a matching `Syllabus Topic` column value. A topic is *checked off* when all related concepts are `mastered`.
+
+Pass the syllabus content to the phase skill alongside the page body (it's already in the page body, so no additional passing is needed).
+
 ### Step 4: Load Context and Route
 
 Read the **full page body** of the domain's Notion page. Pass it to the phase skill along with the Phase and Session Count from column properties.
+
+The page body includes the `## Syllabus` section. Phase skills read it directly — no separate syllabus parameter is needed.
 
 The phase skill ignores sections irrelevant to its phase — no phase-specific filtering at the orchestrator level.
 
