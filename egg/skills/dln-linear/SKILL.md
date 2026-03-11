@@ -48,6 +48,43 @@ Before any teaching begins, **dispatch the `dln-sync` agent** with action `plan-
 
 The agent writes the plan and returns a re-anchor payload. Teach from the returned payload.
 
+### Step 0a: Retrieval Warm-Up
+
+Run this after the session plan write but BEFORE the warm-up problem (Step 1). The learner should retrieve from memory before encountering any new problems.
+
+**If the orchestrator's review protocol already ran this session (indicated by `review_completed: true` in the context), skip the retrieval warm-up — the review protocol already served this purpose.**
+
+#### Protocol
+
+1. **Factor free recall** — Ask the learner to name all the factors they've discovered so far, without prompts:
+
+> "Before we dive in — name every factor you've discovered so far. Don't explain them yet, just list them."
+
+2. **Wait for their response.** Do not hint.
+
+3. **Factor explanation** — Pick one factor they named (ideally one relevant to today's planned chain comparisons) and ask them to explain it structurally:
+
+> "Take [factor name]. Which chains does it connect? What's the structural relationship it captures?"
+
+4. **Pick one factor they did NOT name** (if any were forgotten) and probe:
+
+> "There's a factor you identified in a previous session that you didn't mention. It connects [chain A] and [chain B]. Can you reconstruct it?"
+
+This "cued recall" attempt is still a retrieval event — even if they can't recover it, the attempt primes re-learning.
+
+5. **Score silently:**
+   - Factors recalled vs. total in Knowledge State
+   - Quality of explanation: structural (good), surface-level (needs work), or can't explain (re-teach)
+   - Cued recall success: recovered (good) or still can't (mark for re-discovery)
+
+6. **Respond with feedback:**
+
+> "You recalled [N] of [M] factors. Your explanation of [factor] was [structural/surface-level]. [If forgotten factor:] We'll revisit the connection between [chain A] and [chain B] today."
+
+7. **Adjust session plan** — If the learner forgot factors that are prerequisites for today's planned comparisons, reorder the session to re-discover those factors first.
+
+8. **Dispatch `dln-sync`** with retrieval results in progress notes.
+
 ### Sync Loop (runs at every teaching boundary)
 
 After each of the following boundaries, **dispatch a fresh `dln-sync` agent** with action `sync`:
@@ -66,9 +103,19 @@ After each of the following boundaries, **dispatch a fresh `dln-sync` agent** wi
 - Knowledge State updates: confirmed factors for `## Factors`, parked Network-level questions for `## Open Questions`
 - Any queued writes from previous failed syncs
 
-**On agent return** — use the re-anchor payload to deliver a **visible checkpoint**:
+**On agent return** — use the re-anchor payload to prompt a **learner-generated checkpoint**. Do NOT state the summary yourself — ask the learner to produce it:
 
-> "Quick checkpoint: we've discovered [N] factors so far — [factor names]. Next we'll compare [Chain X] with [Chain Y] to look for more shared structure."
+> "Quick checkpoint — before we move on, summarize where we are. What have we covered so far today, and what's the key takeaway?"
+
+Wait for their response. Compare it against the re-anchor payload. If they miss something significant, prompt:
+
+> "You covered the main points. One thing you didn't mention — [missed item]. Can you connect that to what you just said?"
+
+If they nail it, confirm briefly and move on:
+
+> "Exactly right. Let's continue."
+
+The learner generating the summary is a retrieval event that strengthens retention. The teacher stating the summary is re-study — dramatically less effective.
 
 #### Plan Adjustment
 

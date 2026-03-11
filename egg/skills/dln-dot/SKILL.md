@@ -44,6 +44,47 @@ Before any teaching begins, **dispatch the `dln-sync` agent** with action `plan-
 
 The session number is derived from the current Session Count column property + 1 (Session Count is incremented at session end, so the plan header uses `Session Count + 1`). The agent writes the plan to Notion and returns a re-anchor payload with the Knowledge State and plan. Teach from the returned payload.
 
+### 1b. Retrieval Warm-Up
+
+**Skip this step on the very first session** (Session Count = 0, Knowledge State is empty). For all subsequent sessions, run this BEFORE any new concept delivery.
+
+**If the orchestrator's review protocol already ran this session (indicated by `review_completed: true` in the context), skip the retrieval warm-up — the review protocol already served this purpose.**
+
+The purpose is not assessment — it is a learning event. Retrieving previously learned material from memory strengthens that material and prepares the brain for new, related content (the forward testing effect).
+
+#### Protocol
+
+1. **Concept free recall** — Ask the learner to list every concept they remember from previous sessions, without looking at notes or prompts:
+
+> "Before we start today's new material, I want you to recall everything you can from our previous sessions. List all the key concepts you remember about [domain]. Take your time — there's no penalty for forgetting."
+
+2. **Wait for their response.** Do not prompt or hint. Let silences sit. The effort of retrieval is the learning event.
+
+3. **Chain recall** — Pick one chain from the Knowledge State (preferably one that connects to today's planned material) and ask the learner to trace it:
+
+> "Good. Now walk me through the chain that connects [start concept] to [end concept]. What's the causal sequence?"
+
+4. **Score silently.** Compare their recall against the Knowledge State:
+   - Count concepts recalled vs. total in Knowledge State
+   - Note which concepts were forgotten (these become reinforcement priorities)
+   - Rate chain recall: accurate (all links correct), partial (direction right but gaps), or failed (major errors or can't attempt)
+
+5. **Respond with targeted feedback** — but do NOT re-teach yet:
+
+> "You recalled [N] of [M] concepts. You missed [list]. Your chain from [X] to [Y] was [accurate/partial/incomplete]. Let's keep those gaps in mind — we'll reinforce them as we go today."
+
+6. **Adjust session plan** — If recall < 50%, or if chain recall failed:
+   - Move the first batch of new concepts to the end of the session
+   - Spend the first teaching segment re-delivering forgotten concepts using a *different* analogy than the original (re-reading the same explanation does not help — the new analogy forces deeper processing)
+   - Include a plan adjustment in the next `dln-sync` dispatch
+
+7. **Dispatch `dln-sync`** with action `sync` after the retrieval warm-up completes. Include retrieval results in the progress notes:
+
+```
+- Retrieval warm-up: [N/M] concepts recalled. Forgotten: [list]. Chain [X→Y]: [accurate/partial/failed]. Retrieval score: [N%].
+- Session adjustment: [none / reinforcing X, Y before new material / re-teaching Z with new analogy]
+```
+
 ### Sync Loop (runs at every teaching boundary)
 
 After each of the following boundaries, **dispatch a fresh `dln-sync` agent** with action `sync`:
@@ -62,11 +103,19 @@ After each of the following boundaries, **dispatch a fresh `dln-sync` agent** wi
 - Knowledge State updates: newly confirmed concepts for `## Concepts`, newly built chains for `## Chains`
 - Any queued writes from previous failed syncs
 
-**On agent return** — use the re-anchor payload to deliver a **visible checkpoint** to the learner:
+**On agent return** — use the re-anchor payload to prompt a **learner-generated checkpoint**. Do NOT state the summary yourself — ask the learner to produce it:
 
-> "Quick checkpoint: we've covered [X] and [Y], and you showed solid understanding of [Z]. Next up is [W], which connects to what we just built."
+> "Quick checkpoint — before we move on, summarize where we are. What have we covered so far today, and what's the key takeaway?"
 
-This doubles as retrieval practice for the learner.
+Wait for their response. Compare it against the re-anchor payload. If they miss something significant, prompt:
+
+> "You covered the main points. One thing you didn't mention — [missed item]. Can you connect that to what you just said?"
+
+If they nail it, confirm briefly and move on:
+
+> "Exactly right. Let's continue."
+
+The learner generating the summary is a retrieval event that strengthens retention. The teacher stating the summary is re-study — dramatically less effective.
 
 #### Plan Adjustment
 

@@ -187,3 +187,33 @@ Given what we've learned, what do you think happens next?"
 - Do NOT frame it negatively. Frame as: "We'll reinforce [specific area] next session."
 - Keep Phase at **Dot**.
 - Note what to prioritize in the next session in Open Questions or Chains fields.
+
+## 6. Retrieval Warm-Up Question Bank
+
+Use these at the start of every Dot session (except the first) to prompt free recall.
+
+### Free Recall Prompts
+- "List every concept we've covered in [domain]. Don't filter — just name everything that comes to mind."
+- "What do you remember from our last session? Start with the big ideas and fill in details."
+- "Without looking at notes, what are the building blocks of [domain] as you understand them?"
+
+### Chain Recall Prompts
+- "Walk me through the relationship between [X] and [Y]. What's the causal sequence?"
+- "Last time we built a chain from [start] to [end]. Can you reconstruct it?"
+- "If [trigger event] happens, what follows? Trace the chain."
+
+### Scoring Guide
+
+| Score | Interpretation | Action |
+|-------|---------------|--------|
+| 80-100% concepts recalled | Strong retention | Proceed with new material as planned |
+| 50-79% concepts recalled | Moderate retention | Weave forgotten concepts into today's delivery as "review + extend" |
+| < 50% concepts recalled | Significant decay | Spend first half of session re-teaching forgotten concepts with new analogies before any new material |
+
+### Chain Recall Rating
+
+| Rating | Description | Action |
+|--------|-------------|--------|
+| Accurate | All links correct, correct direction, mechanism explained | Move on |
+| Partial | Direction right but missing intermediate steps or weak on mechanism | Quick re-walk, then move on |
+| Failed | Wrong direction, major errors, or can't attempt | Re-teach the chain as part of today's session plan |

@@ -125,3 +125,30 @@ Any of these indicate the learner is not ready for Network phase:
 - **3/3 pass criteria met, 0 fail criteria triggered** — Pass. Update Phase to Network.
 - **2/3 pass criteria met** — Near pass. Note which criterion failed, assign targeted practice, revisit next session.
 - **1/3 or 0/3 pass criteria met** — Not ready. Continue Linear phase. Identify whether the issue is factor discovery (more cross-pollination needed) or factor precision (more hypothesis refinement needed).
+
+## 5. Retrieval Warm-Up Question Bank
+
+Use at the start of every Linear session to prompt factor recall.
+
+### Factor Free Recall
+- "Name every factor you've discovered so far. Just the names — we'll dig into them after."
+- "What shared structures have you found across your chains?"
+- "If you had to explain why your chains are related — not just that they're related — what principles would you cite?"
+
+### Factor Explanation Prompts
+- "Pick [factor] and tell me: which chains does it connect, and what's the structural relationship?"
+- "Explain [factor] without using any domain-specific vocabulary."
+- "If [factor] is true, what does it predict about a new chain you haven't seen?"
+
+### Cued Recall (for forgotten factors)
+- "There's a factor that connects [chain A] and [chain B]. Can you reconstruct what it might be?"
+- "You noticed something about [specific step] that appears in multiple chains. What was the principle?"
+- "Last session you said something like '[partial quote]'. Can you complete that thought?"
+
+### Scoring Guide
+
+| Score | Interpretation | Action |
+|-------|---------------|--------|
+| 80-100% factors recalled + structural explanations | Strong retention | Proceed with new comparisons |
+| 50-79% factors recalled OR surface explanations | Moderate | Revisit weakest factor through a fresh chain comparison before new material |
+| < 50% factors recalled | Significant decay | Run a full cross-pollination exercise on forgotten factors before introducing new comparisons |

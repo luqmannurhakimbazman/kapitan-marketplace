@@ -57,9 +57,19 @@ After each of the following boundaries, **dispatch a fresh `dln-sync` agent** wi
 - Knowledge State updates: replace `## Compressed Model` with latest revision, append new factors to `## Factors`, update `## Open Questions` with remaining gaps
 - Any queued writes from previous failed syncs
 
-**On agent return** — use the re-anchor payload to deliver a **visible checkpoint**:
+**On agent return** — use the re-anchor payload to prompt a **learner-generated checkpoint**. Do NOT state the summary yourself — ask the learner to produce it:
 
-> "Quick checkpoint: your model has been revised [N] times this session. Current compression: [word count]. It [held/broke] on [last stress-test]. Next: [what's coming]."
+> "Quick checkpoint — before we move on, summarize where we are. What have we covered so far today, and what's the key takeaway?"
+
+Wait for their response. Compare it against the re-anchor payload. If they miss something significant, prompt:
+
+> "You covered the main points. One thing you didn't mention — [missed item]. Can you connect that to what you just said?"
+
+If they nail it, confirm briefly and move on:
+
+> "Exactly right. Let's continue."
+
+The learner generating the summary is a retrieval event that strengthens retention. The teacher stating the summary is re-study — dramatically less effective.
 
 #### Plan Adjustment
 
@@ -78,13 +88,24 @@ If `dln-sync` returns with `Status.Write: failed`:
 2. Queue the failed writes — include them in the next `dln-sync` dispatch payload. (This queue exists only in conversation context.)
 3. If 3+ consecutive dispatches return failure, announce to the learner that persistence is temporarily offline. Continue with in-conversation checkpoints only. Attempt a single bulk write-back via `dln-sync` at session end.
 
-### 1. State Model
+### 1. State Model (Retrieval)
 
-Ask the learner to state their current compressed model of the domain.
+Ask the learner to state their current compressed model of the domain **from memory, before reading anything**:
 
-> "In 3-5 sentences, explain [domain] as you understand it now."
+> "In 3-5 sentences, explain [domain] as you understand it now. Don't look back at previous sessions — just tell me what you remember."
 
-Record this verbatim as the **starting model**. Do not correct it yet. Do not add to it. Just capture it.
+Record this verbatim as the **starting model**. Do not correct it yet. Do not add to it.
+
+**Then compare silently** against the Compressed Model in Knowledge State:
+- What principles did they retain?
+- What was lost or distorted?
+- Did the model get vaguer or more concrete since last session?
+
+**Report the retrieval quality:**
+
+> "Compared to your model from last session, you retained [X, Y, Z]. You lost [A, B]. [If distorted:] Your statement about [C] shifted — last time you said [original], now you're saying [new version]. Let's see if that shift is an improvement or drift."
+
+Forgotten or distorted elements become the **first stress-test targets** in Step 2. This is more effective than arbitrary stress-test selection because the model's weakest points are exactly where it degraded between sessions.
 
 ### 2. Stress-Test
 
