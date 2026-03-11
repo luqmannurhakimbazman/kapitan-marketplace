@@ -62,6 +62,7 @@ All learning content lives in the domain page body, not column properties. The p
 - `## Compressed Model` — Latest model statement (Network phase output)
 - `## Interleave Pool` — Concepts and factors eligible for interleaving (introduced in a prior session and passed initial comprehension check). Maintained by phase skills to enable cross-topic practice.
 - `## Calibration Log` — Per-concept confidence ratings, gate predictions vs actual outcomes, and calibration trend over time. Used by phase skills to detect overconfidence/underconfidence and adjust teaching intensity.
+- `## Load Profile` — Baseline cognitive load observations (working batch size, hint tolerance, recovery pattern) and per-session load history. Used by Dot phase for dynamic batch sizing and by all phases for load-aware pacing.
 - `## Open Questions` — Unresolved gaps
 - `## Weakness Queue` — Priority-ranked queue of items the learner has not mastered. Rewritten (not appended) at each teaching boundary. Derived from mastery table statuses. Used by phase skills to drive session planning.
 
@@ -111,6 +112,17 @@ When creating a new domain profile, write this skeleton to the page body:
 |------------|------------------|----------------|------|
 
 ### Calibration Trend
+
+## Load Profile
+
+### Baseline
+- Observed working batch size: 2
+- Hint tolerance: low (needs <=1 hint per concept)
+- Recovery pattern: responds well to different analogies
+
+### Session History
+| Session | Avg Batch Size | Overload Signals | Adjustments Made |
+|---------|---------------|------------------|-----------------|
 
 ## Open Questions
 
