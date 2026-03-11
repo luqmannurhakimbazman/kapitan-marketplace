@@ -94,6 +94,14 @@ Present edge cases, counterexamples, or cross-domain analogies that should break
 
 Push until the model creaks. Use the stress-test generation prompts from `@references/network-protocol.md` to systematically probe boundaries between factors, test hidden assumptions, and find the simplest breaking case.
 
+#### Factor Mastery Updates from Stress-Tests
+
+Stress-tests implicitly test factors. When a stress-test breaks the model:
+- Identify which factor(s) failed and downgrade to `partial` with evidence: "Stress-test fail — [edge case] broke [factor] (S[N])."
+- When the learner patches the model and the factor holds on a subsequent stress-test, upgrade back to `mastered` with evidence: "Stress-test pass after revision (S[N])."
+
+Include factor mastery updates in every `dln-sync` dispatch. Network phase does not add new mastery tracking for the Compressed Model itself — compression quality is tracked via the existing word count and coverage metrics.
+
 ### 3. Expand on Mismatch
 
 When the model fails, explore the mismatch. Do NOT immediately explain the answer.

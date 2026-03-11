@@ -89,6 +89,28 @@ If `dln-sync` returns with `Status.Write: failed`:
 
 ### 2. Concept Delivery
 
+#### Mastery Status Updates
+
+After each comprehension check, update the mastery status of the concepts in the batch:
+
+| Check Outcome | Status Update |
+|---------------|---------------|
+| Pass — learner paraphrases correctly, gives own example | `mastered` |
+| Partial — correct direction but imprecise, or needed one clarifying question | `partial` |
+| Fail — circular definition, cannot paraphrase, confuses concepts | `not-mastered` |
+
+Include mastery updates in the `dln-sync` dispatch payload:
+
+```
+- Knowledge State updates:
+  - Concept [X]: status → mastered. Evidence: "Recall pass — paraphrased correctly (S[N])."
+  - Concept [Y]: status → partial. Evidence: "Recall partial — correct direction, confused mechanism (S[N])."
+```
+
+If a concept was previously `partial` and the learner demonstrates understanding in a later check (chain explain-back, worked example, or retrieval practice), upgrade to `mastered` and append evidence.
+
+If a concept was `mastered` in a prior session but the learner fails to recall it in the current session's warm-up or chain-building, downgrade to `partial` and append evidence. This prevents false mastery from decaying recall.
+
 Teach in batches of **2-3 concepts**. For each concept, deliver:
 
 1. **Plain-language definition** — No jargon unless you define it inline.
@@ -107,6 +129,18 @@ Connect the delivered concepts into **causal or procedural sequences**. A chain 
 
 Example: "We covered inflation, interest rates, and bond prices. Now: if inflation rises, what happens to interest rates? And then what happens to bond prices? Walk me through it."
 
+#### Chain Mastery Updates
+
+After each chain explain-back, update the chain's mastery status:
+
+| Explain-Back Outcome | Status Update |
+|----------------------|---------------|
+| Correct direction, correct mechanism, complete — first attempt | `mastered` |
+| Correct direction but missing mechanism or intermediate step, OR needed 1 correction | `partial` |
+| Wrong direction, major gaps, or needed full re-teaching | `not-mastered` |
+
+Include chain mastery in the `dln-sync` dispatch. A chain cannot be `mastered` unless ALL its constituent concepts are `mastered` or `partial`. If a concept downgrades, any chain containing it downgrades to at most `partial`.
+
 ### 4. Worked Example
 
 Walk through a **concrete scenario** in the domain that exercises the chain:
@@ -120,13 +154,48 @@ Use the worked example scaffolding structure from `@references/dot-protocol.md`.
 
 ### 5. Phase Gate
 
+#### Pre-Gate Mastery Check
+
+Before running the phase gate assessment, review the mastery table from the latest re-anchor payload. The learner must meet these **prerequisites** before the gate is attempted:
+
+- **All core concepts** must be `mastered` or `partial` (no `not-mastered` items).
+- **At least 2 chains** must be `mastered`.
+
+If prerequisites are not met, do NOT run the phase gate. Instead:
+1. Identify the `not-mastered` and `partial` items.
+2. Run **targeted remediation** — re-teach the weakest item using a different analogy, then re-check comprehension.
+3. Update mastery status via `dln-sync` after remediation.
+4. If the learner reaches prerequisites within the same session, proceed to the gate. Otherwise, end the session with a clear note on what needs work next time.
+
+Tell the learner: "Before we test your readiness to advance, let's make sure your foundations are solid. I noticed [concept/chain] needs some reinforcement — let's work on that."
+
+#### Gate Assessment
+
 Test whether the learner is ready to advance to Linear phase. The learner must demonstrate:
 
 - **(a)** Name the core concepts without prompting (target: 5+ concepts).
 - **(b)** Explain at least 2 causal chains clearly and correctly.
 - **(c)** Trace through a **new** scenario (not the worked example) with minimal help (≤2 hints).
 
-If they pass all three criteria, update their Phase to **Linear** in Notion.
+#### Gate-Driven Mastery Updates
+
+The phase gate itself generates mastery updates:
+- **Criterion (a):** Each concept the learner names unprompted gets evidence "Gate recall pass (S[N])." Concepts they miss get evidence "Gate recall miss (S[N])" — downgrade to `partial` if currently `mastered`.
+- **Criterion (b):** Chains explained correctly get evidence "Gate chain pass (S[N])." Chains with errors get "Gate chain fail — [specific issue] (S[N])."
+- **Criterion (c):** All concepts and chains exercised in the novel scenario get evidence "Gate scenario [pass/partial/fail] (S[N])."
+
+Dispatch `dln-sync` with all gate mastery updates before announcing the result.
+
+#### Pass Criteria (modified)
+
+The learner passes only if:
+1. All three criteria (a), (b), (c) are met, AND
+2. Zero concepts remain at `not-mastered` status after gate updates, AND
+3. At least 80% of concepts are at `mastered` status.
+
+If criteria 1 is met but 2 or 3 is not, this is a **conditional near-pass**. Tell the learner: "You demonstrated strong understanding overall. A couple of concepts need one more round of reinforcement before we move on." Keep Phase at Dot. Next session should prioritize the `partial` items, then re-attempt the gate.
+
+If they pass all criteria, update their Phase to **Linear** in Notion.
 
 If they fail, identify which criterion was missed, reinforce that area, and keep Phase at Dot. Note what needs revisiting in the next session.
 

@@ -61,6 +61,16 @@ You will receive a payload from the teaching skill with these fields:
 2. Also update column properties (Phase, Session Count, Last Session)
 3. Return the compressed re-anchor payload
 
+## Mastery Table Merging
+
+When the write_payload includes mastery updates, merge them into the existing mastery tables in Knowledge State:
+
+1. **Existing row:** Find the row by Concept/Chain/Factor name. Update Status if changed. Append new evidence to the Evidence column (comma-separated). Update Last Tested to today's date.
+2. **New row:** Add a new row with the provided Status, Evidence, and Last Tested.
+3. **Never delete rows** — concepts, chains, and factors are permanent once added. Only status and evidence change.
+
+The mastery tables use pipe-delimited Markdown table format. Preserve formatting.
+
 ## Compression
 
 After reading back page content, compress it into the re-anchor format defined in your preloaded `dln-compress` skill. The full format spec and rules are available in your context — follow them exactly.

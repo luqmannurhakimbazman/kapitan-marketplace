@@ -115,6 +115,25 @@ Use the factor hypothesis prompts from `@references/linear-protocol.md`. A good 
 - **Transferable** — it applies beyond the two chains that generated it.
 - **Predictive** — it can forecast outcomes in unseen problems.
 
+#### Factor Mastery Updates
+
+After each factor hypothesis is stated and validated, update the factor's mastery status:
+
+| Hypothesis Quality | Status |
+|-------------------|--------|
+| Structural + transferable + predictive (passes all three precision checks) | `mastered` |
+| Structural but domain-locked, OR transferable but vague, OR predictive on known cases but untested on novel ones | `partial` |
+| Vague ("they're kind of similar"), domain-specific, or non-predictive | `not-mastered` |
+
+Include factor mastery updates in the `dln-sync` dispatch payload:
+
+```
+- Knowledge State updates:
+  - Factor "[factor statement]": status → partial. Evidence: "Hypothesis structural but domain-locked (S[N])."
+```
+
+When a `partial` factor gets refined to structural + transferable in a later round, upgrade to `mastered` and append evidence. When a previously `mastered` factor fails on an unseen problem, downgrade to `partial`.
+
 ### Step 4: Upgrade Operator Practice
 
 Show how recognizing the factor transforms the *type* of questions the learner can ask:
@@ -127,13 +146,41 @@ Use the upgrade operator examples from `@references/linear-protocol.md`. The lea
 
 ### Step 5: Phase Gate
 
+#### Pre-Gate Mastery Check
+
+Before running the phase gate, review the factor mastery table from the latest re-anchor payload:
+
+- **All confirmed factors** must be `mastered` or `partial` (no `not-mastered` items).
+- **At least 2 factors** must be `mastered`.
+
+If prerequisites are not met, run targeted factor refinement — take the weakest factor and re-run cross-pollination with a new chain pair that exercises it. Update mastery via `dln-sync`.
+
+Tell the learner: "Before we test your readiness for the next level, let's sharpen a couple of your factors."
+
+#### Gate Assessment
+
 Test whether the learner can:
 
 1. **Name at least 3 shared factors** across their chains.
 2. **Predict the outcome of an unseen problem** by applying a factor (with at most 1 hint).
 3. **Identify a minimal principle set** that covers most of their chains (80%+ coverage).
 
-Use the phase gate rubric from `@references/linear-protocol.md`. If they pass all three criteria, update Phase to **Network** in Notion.
+#### Gate-Driven Mastery Updates
+
+- **Criterion 1:** Each factor named gets evidence "Gate articulation pass (S[N])." Factors the learner cannot name: evidence "Gate articulation miss (S[N])" — downgrade to `partial`.
+- **Criterion 2:** Factor used for prediction: "Gate prediction [pass/fail] — [note] (S[N])."
+- **Criterion 3:** Factors in the minimal set: "Gate coverage included (S[N])." Factors excluded: "Gate coverage excluded — [reason] (S[N])."
+
+Dispatch `dln-sync` with gate mastery updates before announcing the result.
+
+#### Pass Criteria (modified)
+
+The learner passes only if:
+1. All three gate criteria are met, AND
+2. Zero factors remain at `not-mastered`, AND
+3. At least 2 factors are at `mastered` status.
+
+Use the full rubric from `@references/linear-protocol.md`. If they pass, update Phase to **Network**.
 
 ---
 

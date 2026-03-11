@@ -60,6 +60,13 @@ All learning content lives in the domain page body, not column properties. The p
 - `## Compressed Model` — Latest model statement (Network phase output)
 - `## Open Questions` — Unresolved gaps
 
+Each of Concepts, Chains, and Factors uses a mastery tracking table with columns:
+- **Status:** `not-mastered` | `partial` | `mastered`
+- **Evidence:** Compact append-only log of assessment events (e.g., "Recall pass (S2), chain trace fail (S3)"), each tagged with session number.
+- **Last Tested:** Date of most recent assessment event.
+
+Mastery status is updated by phase skills at every teaching boundary via the `dln-sync` agent. The orchestrator does not interpret mastery data — it passes the full page body to the phase skill, which reads and acts on the tables.
+
 **Session Logs** — Dated sections appended below Knowledge State by each phase skill. Contains session plan, progress notes, and plan adjustments. Old session logs are kept for audit but are NOT read back during mid-session syncs.
 
 #### Page Body Initialization Template
@@ -71,9 +78,18 @@ When creating a new domain profile, write this skeleton to the page body:
 
 ## Concepts
 
+| Concept | Status | Evidence | Last Tested |
+|---------|--------|----------|-------------|
+
 ## Chains
 
+| Chain | Status | Evidence | Last Tested |
+|-------|--------|----------|-------------|
+
 ## Factors
+
+| Factor | Status | Evidence | Last Tested |
+|--------|--------|----------|-------------|
 
 ## Compressed Model
 

@@ -62,6 +62,47 @@ Use these generic templates after each batch of 2-3 concepts. Substitute the bra
 - Break the concept into smaller sub-concepts
 - Use a concrete micro-example before re-asking
 
+## 2a. Mastery Scoring Guide
+
+Use this guide to assign mastery status after each comprehension check, chain explain-back, or phase gate criterion.
+
+### Concept Mastery Rubric
+
+| Status | Criteria |
+|--------|----------|
+| `mastered` | Learner can (1) paraphrase the concept in own words without referencing the original definition, (2) generate a novel example not previously discussed, and (3) correctly identify how the concept relates to at least one other concept. All three met in a single check. |
+| `partial` | Learner meets 1-2 of the mastered criteria, OR gets the right idea but with imprecise language, OR needs one clarifying question to reach correct understanding. |
+| `not-mastered` | Learner meets 0 of the mastered criteria, OR produces a circular definition, OR confuses the concept with another one, OR cannot attempt an answer. |
+
+### Chain Mastery Rubric
+
+| Status | Criteria |
+|--------|----------|
+| `mastered` | Learner explains the full chain with correct direction, correct mechanism at each link, no missing intermediate steps, on first attempt. |
+| `partial` | Learner gets the direction right but misses mechanism at one or more links, OR omits one intermediate step, OR needs one correction to reach correct explanation. |
+| `not-mastered` | Learner reverses causal direction, omits multiple steps, or cannot trace the chain without heavy scaffolding. |
+
+### Mastery Transitions
+
+- `not-mastered` → `partial`: Learner demonstrates partial understanding in a subsequent check.
+- `partial` → `mastered`: Learner demonstrates full understanding in a subsequent check (including successful use in a chain, worked example, or phase gate).
+- `mastered` → `partial`: Learner fails to recall or correctly apply the concept in a later session. This catches decayed recall.
+- `partial` → `not-mastered`: Learner shows regression — confusion or inability to apply after previously demonstrating partial understanding. This should be rare and triggers immediate remediation.
+
+### Evidence Logging Format
+
+Each mastery update appends to the Evidence column:
+```
+[Assessment type] [pass/partial/fail] — [brief note] (S[session number])
+```
+
+Assessment types: `Recall`, `Relationship`, `Application`, `Chain trace`, `Worked example`, `Gate recall`, `Gate chain`, `Gate scenario`, `Remediation`.
+
+Example evidence trail:
+```
+Recall pass (S1), Chain trace partial — missed mechanism (S1), Remediation pass — new analogy worked (S2), Gate recall pass (S3)
+```
+
 ## 3. Chain-Building Prompts
 
 Use these templates to help learners connect concepts into causal or procedural sequences.
