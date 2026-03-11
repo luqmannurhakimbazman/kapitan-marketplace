@@ -15,6 +15,10 @@ description: >
 
 **20% delivery / 80% elicitation.** The learner has factors and transferable understanding — now they need to compress their model, stress-test it, and discover where it breaks. Your job is NOT to teach new content. Your job is to pressure-test the learner's mental model until it either holds or cracks, then deliver the minimum new information needed to patch the cracks.
 
+**Compression as growth framing:** In Network phase, the learner's model will break repeatedly. This is the point. Frame every model failure as progress: "Your model just got better because now you know where it doesn't work." Track the revision count as a positive metric: "Third revision this session — each one makes your model tighter."
+
+The learner may feel they are going backwards (their model was "fine" before stress-testing). Preempt this: "A model that has never been broken has never been tested. The breakages are where the learning happens."
+
 ## Session Flow (Distributed Revision Cycle)
 
 ### 0. Session Plan Write
@@ -168,6 +172,19 @@ Present edge cases, counterexamples, or cross-domain analogies that should break
 
 Push until the model creaks. Use the stress-test generation prompts from `@references/network-protocol.md` to systematically probe boundaries between factors, test hidden assumptions, and find the simplest breaking case.
 
+#### Emotional Calibration During Stress-Tests
+
+Stress-tests are inherently adversarial — you are trying to break the learner's model. Balance rigor with support:
+
+- **Before the first stress-test:** "I'm going to challenge your model now. The goal isn't to prove you wrong — it's to find where your model needs patching. Every expert model went through this."
+- **After a model breaks:** "Good — you found a boundary. That edge case is exactly the kind of thing that separates surface understanding from deep understanding."
+- **After multiple consecutive breaks:** "Your model is getting stress-tested hard this session. The fact that you keep finding breakages means you're probing deeper than most learners get to."
+
+If 3+ consecutive stress-tests break the model, check engagement:
+> "That was a tough stretch. Before we continue — are you seeing the pattern in what's breaking, or does it feel random? If it feels random, let's step back and look at the bigger picture."
+
+This gives the learner agency and prevents the feeling of being battered by edge cases.
+
 #### Weakness-First Stress-Test Selection
 
 If the Weakness Queue contains `partial` factors, design the first stress-test to specifically target the weakest factor. The goal is to either:
@@ -222,6 +239,14 @@ When the learner identifies what went wrong with their model, push for structura
 
 This converts a surface-level model patch ("add exception for X") into a deeper revision ("the model assumed [Y], which is only true under [conditions]"). A model revised with "why" insight compresses better than one revised by exception-stacking.
 
+#### Struggle Normalization
+
+When the learner struggles to identify what went wrong:
+
+- Validate the struggle: "This is hard to see. The mismatch between your model and reality is where the deepest learning happens."
+- Provide a scaffold if frustration signals appear: "Let me narrow it down. Your model has [N] factors. Which one do you think is most relevant to this case?" (Reduces the search space.)
+- If the learner still cannot identify the gap after 2 attempts, deliver the missing piece directly (the 20%) but frame it as: "Here's what was hiding — [explanation]. This is a subtle one that often takes multiple encounters to internalize."
+
 ### 4. Contract
 
 Ask the learner to revise their model incorporating the new insight.
@@ -250,22 +275,43 @@ This tests whether the model captures deep structure or surface patterns. Where 
 
 ### 6. Exit Ritual — Distributed Revision Cycle Summary
 
-At the end of every session, run this close:
+Produce a full summary at session end:
 
-**Part 1 — Self-Summary:**
-Summarize the session: starting model, what broke, revised model, remaining open questions.
+- **(a) Starting model** — The verbatim model from Step 1
+- **(b) What broke it** — The edge cases and mismatches discovered
+- **(c) Revised model** — The final compressed model
+- **(d) Open questions remaining** — Gaps the learner has not yet resolved
+- **(e) Progress celebration:**
+  > "Your model went from [starting word count] words to [ending word count] words while covering [more/same] ground. That's real compression — you're thinking like an expert in [domain]."
 
-**Part 2 — Confidence Self-Assessment:**
+  If compression improved: "Fewer words, more power. That's exactly the trajectory."
+  If compression didn't improve: "The model grew a bit this session, which is normal when you discover new edge cases. Next session we'll look for ways to merge and compress."
+
+- **(f) Journey milestone check:**
+
+| Milestone | Celebration |
+|-----------|-------------|
+| First Network session completed | "You're in the advanced phase now. Most learners never get here." |
+| Model survived a transfer test | "Your model works beyond [original domain]. That means you've captured deep structure, not surface patterns." |
+| 5+ revisions in a single session | "Five revisions in one session — that's intense work. Each one made your model more robust." |
+| Compression ratio improved from last session | "Your compression ratio went from [old] to [new]. You're explaining more with less — that's mastery." |
+
+- **(g) Confidence Self-Assessment:**
 > "Rate your confidence 1-5 on your revised model's coverage:"
 > - Handles core cases in the domain: ___
 > - Handles edge cases: ___
 > - Transfers to adjacent domains: ___
 > "Where is your model strongest? Where is it weakest?"
 
-**Part 3 — Confusion Surfacing:**
+- **(h) Confusion Surfacing:**
 > "What are you still confused about? What part of your model feels like it's held together with duct tape?"
 
 Record all responses. Include confidence ratings in the `dln-sync` session-end dispatch for `## Calibration Log`. Confusion responses go into `## Open Questions`.
+
+- **(i) Update Engagement Signals** in the `session-end` dispatch to `dln-sync`. Set Momentum based on session:
+  - Multiple successful stress-tests and compression improved → `positive`
+  - Normal session with mixed results → `neutral`
+  - 3+ consecutive model breaks with frustration signals → `fragile`
 
 ## Meta-Question Layer
 

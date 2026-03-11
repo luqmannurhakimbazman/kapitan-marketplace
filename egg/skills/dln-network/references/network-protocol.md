@@ -326,3 +326,41 @@ Since learners can describe but not draw:
 - "If your model were a map, what would be at the center? What connects to it?"
 - "Draw your model verbally: what are the 3-4 most important nodes, and what are the arrows between them?"
 - "Your last model had [N] nodes. After this revision, how many do you need? What did you merge?"
+
+## 10. Frustration Response Protocol for Stress-Testing
+
+### The Stress-Test Paradox
+
+Stress-testing requires deliberately breaking the learner's model. This is productive — but it can feel demoralizing if the learner interprets breakages as personal failures rather than model improvements.
+
+### Detection Signals (Network-Specific)
+
+| Signal | What it means |
+|--------|---------------|
+| "My model is wrong" (global, not specific) | Learner is catastrophizing — they think everything is wrong, not just the edge case |
+| "Maybe I should go back to basics" | Learner's self-efficacy is dropping — they doubt their Linear/Dot mastery |
+| Increasingly terse or passive responses | Disengagement from the stress-test process |
+| "Just tell me the answer" | Learner has given up on self-directed discovery |
+
+### Response Templates
+
+**For catastrophizing:**
+> "Your model isn't wrong — it's incomplete. It correctly explains [list 2-3 things it handles]. We're finding the edges where it needs to grow. That's exactly the process."
+
+**For self-efficacy drop:**
+> "You don't need to go back to basics. You have [N] mastered factors and [M] solid chains. This edge case doesn't invalidate any of that — it adds to it."
+
+**For disengagement:**
+> "Let's step back from stress-testing for a moment. Tell me: what's the most interesting thing your model explains well? [Let them re-experience competence.] Good. Now — that same model, with one small addition, could also explain [the breaking case]. What might that addition be?"
+
+**For "just tell me":**
+> "I'll get you there, but let me narrow it down first. Your model has [N] factors. [Factor X] is the one that's most relevant to this case. What does [Factor X] predict should happen here? [Guided discovery with reduced scope.]"
+
+### Desirable Difficulty Calibration
+
+After each stress-test round, calibrate difficulty:
+- If the model held easily: increase difficulty — use more extreme edge cases, cross-domain challenges, or assumption falsification.
+- If the model broke and the learner identified why: maintain difficulty — this is the sweet spot.
+- If the model broke and the learner could NOT identify why after 2 attempts: decrease difficulty — use a simpler breaking case, or break the mismatch into sub-questions.
+
+The target is a ~60-70% success rate — models should hold about two-thirds of the time, breaking on the remaining third. This keeps the learner in the zone of proximal development.
