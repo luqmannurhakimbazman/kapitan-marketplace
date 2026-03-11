@@ -62,6 +62,31 @@ Use these generic templates after each batch of 2-3 concepts. Substitute the bra
 - Break the concept into smaller sub-concepts
 - Use a concrete micro-example before re-asking
 
+### Elaborative Interrogation Questions
+
+Use ONLY after the learner has at least one anchor concept to connect to. Never on the first concept in a domain.
+
+#### "Why" Templates (concept-level)
+- "Why does [concept A] cause [effect on concept B]? What's the underlying mechanism?"
+- "Why does [concept] work this way instead of some other way?"
+- "Why is [concept] important in this domain? What would go wrong without it?"
+- "Why do [concept A] and [concept B] move in opposite directions?"
+
+#### "Why" Templates (chain-level)
+- "We know the chain goes [A → B → C]. But WHY does A lead to B? What's the mechanism at that link?"
+- "Why does this chain exist? What problem does this process solve?"
+- "Why can't you skip step [B] and go directly from [A] to [C]?"
+- "Why does the chain break if you reverse the order?"
+
+#### Progressive Depth
+Start with the surface "why" and go deeper only if the learner engages:
+
+1. **Surface why:** "Why does [X] happen?" (Looking for: basic causal mechanism)
+2. **Mechanism why:** "But why does THAT mechanism work?" (Looking for: deeper principle)
+3. **Design why:** "Why is the system set up this way? Could it work differently?" (Looking for: structural understanding)
+
+Do not push past level 2 in the Dot phase. Level 3 is Linear/Network territory.
+
 ## 2a. Mastery Scoring Guide
 
 Use this guide to assign mastery status after each comprehension check, chain explain-back, or phase gate criterion.
@@ -130,6 +155,17 @@ After the learner explains a chain back, check for:
 [correction with explanation]. So the full chain is: [restated chain].
 Can you walk through it again with that fix?"
 ```
+
+### Mechanism "Why" Prompts
+
+After a learner successfully explains a chain, probe one link with a "why does this mechanism exist?" question. Pick the link the learner explained most superficially.
+
+- "You said [A leads to B]. I agree — but WHY does that link exist? What's the mechanism?"
+- "The chain goes [A → B → C]. You explained the 'what' perfectly. Now — why does [B] necessarily follow from [A]?"
+- "If someone asked you 'but why?' about the [A → B] link, what would you say?"
+- "This chain works in [domain]. Could the same mechanism appear in a completely different context? Why or why not?"
+
+**When to skip:** If the learner struggled to build the chain in the first place (needed 2+ hints), do NOT add a "why" probe. Consolidate the "what" first. Come back to the "why" in the next session when the chain is more automatic.
 
 ## 4. Worked Example Scaffolding
 
