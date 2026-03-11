@@ -65,6 +65,7 @@ All learning content lives in the domain page body, not column properties. The p
 - `## Load Profile` — Baseline cognitive load observations (working batch size, hint tolerance, recovery pattern) and per-session load history. Used by Dot phase for dynamic batch sizing and by all phases for load-aware pacing.
 - `## Open Questions` — Unresolved gaps
 - `## Weakness Queue` — Priority-ranked queue of items the learner has not mastered. Rewritten (not appended) at each teaching boundary. Derived from mastery table statuses. Used by phase skills to drive session planning.
+- `## Engagement Signals` — Lightweight motivational state (momentum, consecutive struggles, last celebration, notes). Updated by phase skills at teaching boundaries.
 
 Each of Concepts, Chains, and Factors uses a mastery tracking table with columns:
 - **Status:** `not-mastered` | `partial` | `mastered`
@@ -130,6 +131,13 @@ When creating a new domain profile, write this skeleton to the page body:
 
 | Priority | Item | Type | Phase | Severity | Source | Added |
 |----------|------|------|-------|----------|--------|-------|
+
+## Engagement Signals
+
+- Momentum: neutral
+- Consecutive struggles: 0
+- Last celebration: none
+- Notes:
 ~~~
 
 ---
@@ -299,3 +307,21 @@ Phase transitions are handled by the phase skills themselves:
 - **Multiple domain matches:** If the query returns multiple rows, show them and ask the user to clarify.
 - **Phase skill not found:** This shouldn't happen in normal operation. If it does, report the error and suggest the user check their plugin installation.
 - **Notion fails mid-session:** Phase skills delegate all Notion I/O to the `dln-sync` agent. If `dln-sync` returns with a failure status, the phase skill logs the intended update in-conversation, queues failed writes for the next dispatch, and falls back to in-conversation-only tracking if 3+ consecutive dispatches fail. See phase skill instructions for details.
+
+---
+
+## 6. Motivational Architecture
+
+All DLN phase skills embed motivational design into their teaching. This is not a separate system — it is woven into every interaction. The principles:
+
+1. **Growth mindset framing:** Attribute success to effort and strategy, not innate ability. "You worked through that" not "You're smart." Attribute struggle to the difficulty of the material or the need for a different approach, never to the learner's capacity.
+
+2. **Visible progress:** At every checkpoint, tell the learner where they are relative to where they started. Use concrete counts: "You've mastered 8 of 12 concepts" or "Your model is 40% more compressed than last session." Progress must be tangible, not just "you're doing well."
+
+3. **Frustration detection and response:** Monitor for frustration signals (see phase skill instructions). When detected, intervene immediately — do not push through. Simplify, provide a quick win, then rebuild momentum.
+
+4. **Desirable difficulty calibration:** Learning should feel challenging but achievable. If the learner breezes through everything, increase difficulty. If they hit a wall, reduce scope and provide scaffolding. The target emotional state is "stretched but not overwhelmed."
+
+5. **Celebration at milestones:** Phase transitions, mastery achievements, and session count thresholds are celebrated explicitly. Not with empty praise — with specific acknowledgment of what the learner accomplished and what it means.
+
+The `## Engagement Signals` section in the Knowledge State persists motivational context between sessions so the next session can calibrate its tone appropriately.
