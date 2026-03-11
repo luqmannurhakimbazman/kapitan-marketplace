@@ -230,3 +230,89 @@ For interleaved upgrade operator practice:
 - "Here's a Dot question: [question]. Can you upgrade this to a Linear question? (It's possible there's no upgrade — not every question has one.)"
 - "Upgrade these three questions. But be warned — one of them doesn't have a Linear upgrade. Which one, and why?"
 - "[question A], [question B], [question C]. Two of these have factor-based upgrades. One is genuinely a standalone Dot question. Sort them."
+
+## 9. Visual Representation Templates
+
+### Visual Format Constraints
+
+Claude Code operates in a text terminal. Available visual formats:
+
+| Format | Best For | Limitations |
+|--------|----------|-------------|
+| **Mermaid diagrams** | Flowcharts, sequence diagrams, concept maps | Renders in Mermaid-compatible viewers; displays as readable code in terminal |
+| **ASCII box diagrams** | Simple relationships, 2-4 nodes | Universal rendering; breaks down with 5+ nodes |
+| **Indented tree structures** | Hierarchies, taxonomies | Easy to read; can't show cross-links |
+| **ASCII tables** | Comparisons, side-by-side analysis | Universal; limited to tabular relationships |
+| **Inline notation** | Quick inline relationships | `A → B → C` is clear for simple chains |
+
+**Default choice:** Use **Mermaid** for anything with 3+ nodes and cross-links. Use **inline notation** (`A → B → C`) for simple chains mentioned in passing. Use **ASCII tables** for side-by-side comparisons.
+
+**When to generate visuals:**
+- After building a chain (show the chain as a diagram)
+- During cross-pollination (side-by-side comparison)
+- When the learner's verbal model gets complex enough to benefit from spatial layout (roughly 4+ interconnected concepts)
+- When the learner requests it
+
+**When NOT to generate visuals:**
+- For single-concept delivery (a diagram of one node is pointless)
+- When the relationship is genuinely linear with no branches (inline notation suffices)
+- When the learner is overloaded (adding a visual format on top of verbal overload makes it worse)
+
+### Side-by-Side Chain Comparison
+
+```mermaid
+graph TD
+    subgraph "Chain A: [Name]"
+        A1["[Step 1]"] --> A2["[Step 2]"]
+        A2 --> A3["[Step 3]"]
+    end
+
+    subgraph "Chain B: [Name]"
+        B1["[Step 1]"] --> B2["[Step 2]"]
+        B2 --> B3["[Step 3]"]
+    end
+```
+
+Align structurally similar steps vertically to make the shared pattern visible.
+
+### Factor Map (abstract pattern)
+
+```mermaid
+graph TD
+    F1["[Abstract role 1]"] -->|"[abstract mechanism]"| F2["[Abstract role 2]"]
+    F2 -->|"[abstract mechanism]"| F3["[Abstract role 3]"]
+
+    style F1 fill:#ffd,stroke:#333
+    style F2 fill:#ffd,stroke:#333
+    style F3 fill:#ffd,stroke:#333
+```
+
+Use a distinct style (yellow fill) for factor diagrams to visually distinguish abstract patterns from concrete chains.
+
+### Factor Coverage Map
+
+After discovering multiple factors, show which chains each factor covers:
+
+```mermaid
+graph TD
+    FA["Factor A"] ---|"covers"| C1["Chain 1"]
+    FA ---|"covers"| C2["Chain 2"]
+    FB["Factor B"] ---|"covers"| C2
+    FB ---|"covers"| C3["Chain 3"]
+    FB ---|"covers"| C4["Chain 4"]
+
+    style FA fill:#ffd,stroke:#333
+    style FB fill:#ffd,stroke:#333
+```
+
+This makes the "minimal principle set" phase gate criterion visual — the learner can see coverage and gaps.
+
+### Upgrade Operator Visualization
+
+Show the three question levels as zoom levels on the same structure:
+
+```
+Dot level:    [A] → [B] → [C]          "What happens at each step?"
+Linear level: [Factor] ⊃ {Chain1, Chain2}   "What do they share?"
+Network level: [Model] ⊃ {F1, F2, F3}       "What's the minimal set?"
+```

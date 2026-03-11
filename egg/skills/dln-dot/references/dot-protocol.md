@@ -422,3 +422,89 @@ As the learner progresses through the Dot phase and accumulates concepts, techni
 - **Sessions 5+:** If still in Dot phase, the learner has likely mastered some concepts but struggles with others. Adapt per-concept, not per-session. Use full scaffolding only for the specific concepts causing difficulty.
 
 Signal for expertise reversal: the learner answers comprehension checks BEFORE you finish asking, or says "Yeah, I know" during concept delivery. When this happens, accelerate through familiar material and focus time on the gap concepts.
+
+## 11. Visual Representation Templates
+
+### Visual Format Constraints
+
+Claude Code operates in a text terminal. Available visual formats:
+
+| Format | Best For | Limitations |
+|--------|----------|-------------|
+| **Mermaid diagrams** | Flowcharts, sequence diagrams, concept maps | Renders in Mermaid-compatible viewers; displays as readable code in terminal |
+| **ASCII box diagrams** | Simple relationships, 2-4 nodes | Universal rendering; breaks down with 5+ nodes |
+| **Indented tree structures** | Hierarchies, taxonomies | Easy to read; can't show cross-links |
+| **ASCII tables** | Comparisons, side-by-side analysis | Universal; limited to tabular relationships |
+| **Inline notation** | Quick inline relationships | `A → B → C` is clear for simple chains |
+
+**Default choice:** Use **Mermaid** for anything with 3+ nodes and cross-links. Use **inline notation** (`A → B → C`) for simple chains mentioned in passing. Use **ASCII tables** for side-by-side comparisons.
+
+**When to generate visuals:**
+- After building a chain (show the chain as a diagram)
+- During cross-pollination (side-by-side comparison)
+- When the learner's verbal model gets complex enough to benefit from spatial layout (roughly 4+ interconnected concepts)
+- When the learner requests it
+
+**When NOT to generate visuals:**
+- For single-concept delivery (a diagram of one node is pointless)
+- When the relationship is genuinely linear with no branches (inline notation suffices)
+- When the learner is overloaded (adding a visual format on top of verbal overload makes it worse)
+
+### Simple Chain (3-4 concepts)
+
+```mermaid
+graph LR
+    A["[Concept A]"] -->|"[mechanism]"| B["[Concept B]"]
+    B -->|"[mechanism]"| C["[Concept C]"]
+```
+
+### Branching Chain (one cause, multiple effects)
+
+```mermaid
+graph TD
+    A["[Trigger]"] --> B["[Effect 1]"]
+    A --> C["[Effect 2]"]
+    B --> D["[Downstream 1]"]
+    C --> D
+```
+
+### Concept Cluster (related concepts, no clear causal flow)
+
+```mermaid
+graph TD
+    A["[Central Concept]"] --- B["[Related 1]"]
+    A --- C["[Related 2]"]
+    A --- D["[Related 3]"]
+    B --- C
+```
+
+### Worked Example Trace
+
+```mermaid
+graph TD
+    S["Scenario: [description]"] --> A["[First concept applies]"]
+    A --> B["[Second concept applies]"]
+    B --> C["[Outcome]"]
+
+    style S fill:#f9f,stroke:#333
+```
+
+### Inline Notation (for simple references in prose)
+
+Use inline chain notation when referring to chains in explanatory text:
+
+- Simple: `Inflation ↑ → Interest rates ↑ → Bond prices ↓`
+- With mechanism: `Inflation ↑ →(central bank tightens)→ Interest rates ↑ →(fixed coupons less attractive)→ Bond prices ↓`
+- Branching: `Rate ↑ → {Bond prices ↓, Housing demand ↓, Savings ↑}`
+
+### When to Ask Learners to "Draw"
+
+Since the learner can't draw in a terminal, "drawing" means verbally describing a diagram:
+
+> "Describe your chain as a diagram — what are the boxes, and what are the arrows? Label each arrow with WHY that link exists."
+
+Evaluate their verbal diagram for:
+- **Correct nodes:** Did they include all relevant concepts?
+- **Correct edges:** Do their arrows point in the right direction?
+- **Edge labels:** Did they articulate the mechanism, not just the direction?
+- **Missing connections:** Are there relationships they omitted?

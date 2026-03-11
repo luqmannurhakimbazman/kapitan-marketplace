@@ -231,3 +231,98 @@ When designing a stress-test sequence, use the following scheduling template:
 - "Factors [A] and [B] both apply to this case. They predict [different outcomes]. What actually happens, and what does that tell you about the boundary between them?"
 - "Build me a scenario where [Factor A] dominates. Now modify it slightly so [Factor B] takes over. What changed?"
 - "Your model uses [Factor A] and [Factor B] independently. Are they truly independent, or does one constrain the other?"
+
+## 9. Visual Representation Templates
+
+### Visual Format Constraints
+
+Claude Code operates in a text terminal. Available visual formats:
+
+| Format | Best For | Limitations |
+|--------|----------|-------------|
+| **Mermaid diagrams** | Flowcharts, sequence diagrams, concept maps | Renders in Mermaid-compatible viewers; displays as readable code in terminal |
+| **ASCII box diagrams** | Simple relationships, 2-4 nodes | Universal rendering; breaks down with 5+ nodes |
+| **Indented tree structures** | Hierarchies, taxonomies | Easy to read; can't show cross-links |
+| **ASCII tables** | Comparisons, side-by-side analysis | Universal; limited to tabular relationships |
+| **Inline notation** | Quick inline relationships | `A → B → C` is clear for simple chains |
+
+**Default choice:** Use **Mermaid** for anything with 3+ nodes and cross-links. Use **inline notation** (`A → B → C`) for simple chains mentioned in passing. Use **ASCII tables** for side-by-side comparisons.
+
+**When to generate visuals:**
+- After building a chain (show the chain as a diagram)
+- During cross-pollination (side-by-side comparison)
+- When the learner's verbal model gets complex enough to benefit from spatial layout (roughly 4+ interconnected concepts)
+- When the learner requests it
+
+**When NOT to generate visuals:**
+- For single-concept delivery (a diagram of one node is pointless)
+- When the relationship is genuinely linear with no branches (inline notation suffices)
+- When the learner is overloaded (adding a visual format on top of verbal overload makes it worse)
+
+### Model Concept Map
+
+```mermaid
+graph TD
+    M["[Core Principle]"] --> F1["[Factor 1]"]
+    M --> F2["[Factor 2]"]
+    F1 --> P1["[Prediction 1]"]
+    F1 --> P2["[Prediction 2]"]
+    F2 --> P2
+    F2 --> P3["[Prediction 3]"]
+    F1 -.->|"tension"| F2
+```
+
+Use solid arrows for causal/supporting links. Dotted arrows for tensions, trade-offs, or boundary conditions.
+
+### Before/After Compression Comparison
+
+Render the model before and after revision as two diagrams. Count nodes and edges:
+
+```
+Before: [N] nodes, [M] edges
+After:  [N'] nodes, [M'] edges
+Compression: [ratio]
+```
+
+### Stress-Test Annotation
+
+When a stress-test breaks the model, annotate the diagram to show WHERE it broke:
+
+```mermaid
+graph TD
+    M["Core Principle"] --> F1["Factor 1"]
+    M --> F2["Factor 2"]
+    F1 --> P1["Prediction 1 ✓"]
+    F1 --> P2["Prediction 2 ✗ BROKE HERE"]
+    F2 --> P2
+
+    style P2 fill:#f99,stroke:#333
+```
+
+Use red styling for the broken node/edge. This gives the learner a spatial anchor for where their model needs revision.
+
+### Transfer Test Map
+
+Show the original domain and transfer domain side by side, with the model applied to both:
+
+```mermaid
+graph TD
+    subgraph "Original: [Domain A]"
+        A1["[Concept]"] --> A2["[Outcome] ✓"]
+    end
+
+    subgraph "Transfer: [Domain B]"
+        B1["[Analogous concept]"] --> B2["[Predicted outcome] ?"]
+    end
+
+    M["[Model]"] -.-> A1
+    M -.-> B1
+```
+
+### Verbal "Diagram Description" Prompts
+
+Since learners can describe but not draw:
+
+- "If your model were a map, what would be at the center? What connects to it?"
+- "Draw your model verbally: what are the 3-4 most important nodes, and what are the arrows between them?"
+- "Your last model had [N] nodes. After this revision, how many do you need? What did you merge?"
