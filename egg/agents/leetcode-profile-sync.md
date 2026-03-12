@@ -39,7 +39,7 @@ Run via Bash:
 
 ### 2. Ensure Files Exist
 
-If the profile file does not exist, create both files:
+If the profile file does not exist, create both files using the templates below. The canonical format specification lives in `references/teaching/learner-profile-spec.md` — if these templates ever diverge from the spec, the spec wins.
 
 **Profile template:**
 ```
@@ -80,7 +80,7 @@ Note any repairs made.
 
 ### 4. Sync-Heal Profile ↔ Ledger
 
-Compare the most recent Session History timestamp in the profile against the most recent ledger row timestamp. If the profile has a newer entry than the ledger, extract fields from that entry and append a sync-heal row to the ledger with `Session ID: sync-heal` and `Pattern: unknown`.
+Compare the most recent Session History timestamp in the profile against the most recent ledger row timestamp. If the profile has a newer entry than the ledger, extract fields from that entry and append a sync-heal row to the ledger with `Session ID: sync-heal`, `Pattern: unknown`, `Verdict: unknown`, and `Gaps: unknown`.
 
 ### 5. Compute Retest Suggestions
 

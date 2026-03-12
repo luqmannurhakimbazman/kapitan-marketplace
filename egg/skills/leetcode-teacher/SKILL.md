@@ -202,7 +202,7 @@ The agent returns session metadata (ID + timestamp), the full profile, retest su
 - **Session continuity:** Read the last 5 session history entries. Acknowledge trajectory ("Last time you worked on sliding window and caught the edge case you'd been missing — nice progress").
 - **About Me:** Use for calibration (language preference, level, goals). If `[FIRST SESSION]` tag is present, populate About Me from observations during the session and confirm at end.
 
-**Post-compaction recovery:** If `~/.local/share/claude/leetcode-session-state.md` exists, read it for procedural reminders (session ID, **session timestamp**, **agent ID**, write-back requirements). Rename the file to `~/.local/share/claude/leetcode-session-state.md.processed` after reading.
+**Post-compaction recovery:** If `~/.local/share/claude/leetcode-session-state.md` exists, read it for procedural reminders (session ID, **session timestamp**, write-back requirements). The agent ID is not preserved across compaction — fall back to direct file writes per `references/teaching/learner-profile-spec.md`. Rename the file to `~/.local/share/claude/leetcode-session-state.md.processed` after reading.
 
 **Fallback** (agent dispatch fails): Read `~/.local/share/claude/leetcode-teacher-profile.md` manually. If it doesn't exist, create both files with templates per `references/teaching/learner-profile-spec.md`. Generate session metadata locally. Note: if Dispatch 1 falls back, write-back must also be done directly (no agent to resume).
 

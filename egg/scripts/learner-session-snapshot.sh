@@ -26,7 +26,7 @@ if [ -n "$TRANSCRIPT" ] && [ -f "$TRANSCRIPT" ] && grep -q "leetcode-teacher" "$
 - Session Timestamp: ${SESSION_TS}
 - Write-back required at session end: Step 8B (learning) or R7B (recall).
 - Write ledger row first, then profile entry.
-- The leetcode-profile-sync agent was dispatched at session start. Look for its agent ID in your earlier context to resume it for write-back. If the agent ID is lost, fall back to direct file writes.
+- The leetcode-profile-sync agent was dispatched at session start, but its agent ID is not preserved across compaction. Fall back to direct file writes per references/teaching/learner-profile-spec.md.
 EOF
 fi
 
