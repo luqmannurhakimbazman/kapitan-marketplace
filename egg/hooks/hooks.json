@@ -16,14 +16,6 @@
         "hooks": [
           {
             "type": "command",
-            "command": "bash ${CLAUDE_PLUGIN_ROOT}/scripts/learner-profile-load.sh"
-          }
-        ]
-      },
-      {
-        "hooks": [
-          {
-            "type": "command",
             "command": "bash ${CLAUDE_PLUGIN_ROOT}/scripts/markets-profile-load.sh"
           }
         ]
