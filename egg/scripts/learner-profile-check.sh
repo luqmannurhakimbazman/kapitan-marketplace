@@ -48,8 +48,20 @@ if [ "$USER_TURNS" -lt 2 ]; then
   exit 0
 fi
 
-# Check both files were actually written (not just read/mentioned)
-# Two-stage pipe: filter to write operations, then check for target file
+# Check for write-back via the leetcode-profile-sync agent (primary path).
+# Subagent tool calls do NOT appear in the main transcript — only the Agent
+# tool dispatch does. So we check for an Agent resume with write-back prompt.
+# TODO: Verify assumption that subagent tool calls are absent from main transcript.
+#       If they DO appear, the direct-write fallback check below would also catch
+#       agent-internal writes, making the agent dispatch check redundant but harmless.
+AGENT_WRITEBACK=$(grep -E '"name"\s*:\s*"Agent"' "$TRANSCRIPT" 2>/dev/null | grep -c 'Write back session results' 2>/dev/null)
+AGENT_WRITEBACK=${AGENT_WRITEBACK:-0}
+
+if [ "$AGENT_WRITEBACK" -gt 0 ]; then
+  exit 0
+fi
+
+# Fallback: check for direct file writes (used when agent dispatch/resume fails)
 PROFILE_WRITTEN=$(grep -E '"name"\s*:\s*"(Write|Edit|MultiEdit)"' "$TRANSCRIPT" 2>/dev/null | grep -c 'leetcode-teacher-profile' 2>/dev/null)
 PROFILE_WRITTEN=${PROFILE_WRITTEN:-0}
 LEDGER_WRITTEN=$(grep -E '"name"\s*:\s*"(Write|Edit|MultiEdit)"' "$TRANSCRIPT" 2>/dev/null | grep -c 'leetcode-teacher-ledger' 2>/dev/null)
