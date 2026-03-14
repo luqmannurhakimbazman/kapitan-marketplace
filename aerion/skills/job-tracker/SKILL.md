@@ -63,6 +63,8 @@ Match emails to existing sheet rows by **Company + Role** (case-insensitive, fuz
 - "Citadel Securities" matches "Citadel" — same company
 - "Software Engineer, Infrastructure" matches "SWE Infra" — use judgment on abbreviations
 
+**When in doubt, flag as ambiguous.** If you are not confident that a company or role name refers to an existing row, do not silently create a duplicate — present it as ambiguous and let the user confirm the match or create a new row.
+
 If no match is found and the email indicates a new application, create a new row with Stage = Applied.
 
 ## Update Rules
@@ -123,6 +125,8 @@ The `add_rows` tool inserts blank rows at the TOP of the sheet by default (when 
 ### Pre-write snapshot
 
 Immediately before ANY write operation, re-read the full sheet with `get_sheet_data`. This fresh snapshot is your baseline — do not rely on earlier reads (data may have changed).
+
+**Important:** Tell the user not to edit the sheet until writes are complete. There is a short window between reading the snapshot and writing where manual edits could be overwritten.
 
 Calculate all target cell ranges from this snapshot. For appends, find the last occupied row and target the next row.
 

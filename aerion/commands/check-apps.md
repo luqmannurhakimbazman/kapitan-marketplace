@@ -32,6 +32,8 @@ to:lluqmannurhakim@gmail.com (subject:application OR subject:interview OR subjec
 
 For each search result, use the Gmail read tool (`gmail_read_message` or `Read Gmail Email`) to retrieve the full email content. Read emails in parallel where possible.
 
+**Thread handling:** If a search result is part of a thread with multiple messages, use `gmail_read_thread` to read the full thread. When a thread contains multiple stage signals (e.g., an application confirmation followed by an interview invite), use the **most recent message** as the authoritative signal for stage classification. Earlier messages in the thread should only be used for entity extraction (Company, Role) if the latest message lacks them.
+
 ### 4. Read Current Sheet
 
 1. Use `list_spreadsheets` to find "Job Tracker" in the hojicha folder.
