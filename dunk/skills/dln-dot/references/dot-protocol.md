@@ -438,7 +438,7 @@ Signal for expertise reversal: the learner answers comprehension checks BEFORE y
 
 ### Visual Format Constraints
 
-See `@${CLAUDE_PLUGIN_ROOT}/egg/skills/dln/references/visual-format.md` for the full visual format reference (Mermaid, ASCII, inline notation — when to use each).
+See `@${CLAUDE_PLUGIN_ROOT}/skills/dln/references/visual-format.md` for the full visual format reference (Mermaid, ASCII, inline notation — when to use each).
 
 ### Simple Chain (3-4 concepts)
 

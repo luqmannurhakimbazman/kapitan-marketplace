@@ -15,6 +15,11 @@
       "name": "aerion",
       "source": "./aerion",
       "description": "Gmail-to-Google-Sheets job application tracker"
+    },
+    {
+      "name": "dunk",
+      "source": "./dunk",
+      "description": "DLN (Dot-Linear-Network) domain-agnostic learning system"
     }
   ]
 }

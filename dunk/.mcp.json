@@ -1,0 +1,10 @@
+{
+  "context7": {
+    "command": "npx",
+    "args": ["-y", "@upstash/context7-mcp@latest"]
+  },
+  "exa": {
+    "command": "bash",
+    "args": ["${CLAUDE_PLUGIN_ROOT}/scripts/exa-mcp.sh"]
+  }
+}

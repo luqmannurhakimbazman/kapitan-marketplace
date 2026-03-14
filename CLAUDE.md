@@ -11,7 +11,7 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 ## Architecture
 
-The marketplace contains two plugins: `egg/` (development workflows) and `aerion/` (job application tracking). Claude Code discovers all components by convention:
+The marketplace contains three plugins: `egg/` (development workflows), `aerion/` (job application tracking), and `dunk/` (DLN learning system). Claude Code discovers all components by convention:
 
 | Component | Location | Format |
 |-----------|----------|--------|
@@ -40,15 +40,20 @@ The top-level `.claude-plugin/marketplace.json` is the marketplace registry poin
 - **`cover-letter` skill** — Standalone cover letter generation from analysis notes.
 - **`leetcode-teacher` skill** — Socratic LeetCode/ML implementation teacher with evidence-based learning science. 50 reference files covering algorithm frameworks, problem patterns, data structures, sorting, linked lists, arrays, binary search, stacks/queues, matrix techniques, graphs, brute-force search, dynamic programming, greedy algorithms, combinatorics, numerical methods, advanced graph algorithms, linear algebra, and ML implementations.
 - **`global-markets-teacher` skill** — Socratic global markets & trading interview teacher with 3 modes (Learning, Recall, Mock Interview). 28 reference files covering rates/fixed income, FX, equities, commodities, credit, crypto, macro economics, derivatives, risk management, market mechanics, trade pitch framework, scenario analysis, headline analysis, brain teasers, and 6 firm-type profiles (hedge funds, banks, asset managers, trading houses, energy majors, crypto trading firms).
-- **`dln` skill** (orchestrator) — Domain-agnostic learning orchestrator using the Dot-Linear-Network cognitive topology framework. Parses domain, queries/creates Notion profile, routes to appropriate phase skill.
-- **`dln-dot` skill** — Dot phase (70% delivery / 30% elicitation). Builds foundational concept nodes and causal chains for new domains.
-- **`dln-linear` skill** — Linear phase (50/50 delivery/elicitation). Discovers shared factors across procedural chains, builds transferable understanding.
-- **`dln-network` skill** — Network phase (20% delivery / 80% elicitation). Stress-tests, compresses, and refines the learner's mental model via the Distributed Revision Cycle.
-
 ### aerion plugin (`aerion/`)
 
 - **`/check-apps`** — Scans Gmail for job application status updates and syncs to a Google Sheets "Job Tracker" in the hojicha Drive folder. Uses workspace MCP (Gmail) + mcp-google-sheets (Sheets read/write).
 - **`job-tracker` skill** — Email classification rules, entity extraction, stage progression logic, and sheet update constraints for job application tracking.
+
+### dunk plugin (`dunk/`)
+
+- **`dln` skill** (orchestrator) — Domain-agnostic learning orchestrator using the Dot-Linear-Network cognitive topology framework. Parses domain, queries/creates Notion profile, routes to appropriate phase skill.
+- **`dln-dot` skill** — Dot phase (70% delivery / 30% elicitation). Builds foundational concept nodes and causal chains for new domains.
+- **`dln-linear` skill** — Linear phase (50/50 delivery/elicitation). Discovers shared factors across procedural chains, builds transferable understanding.
+- **`dln-network` skill** — Network phase (20% delivery / 80% elicitation). Stress-tests, compresses, and refines the learner's mental model via the Distributed Revision Cycle.
+- **`dln-compress` skill** — Internal compression format for dln-sync agent. Not user-facing.
+- **`dln-sync` agent** — Internal Notion I/O agent for DLN running ledger. Dispatched by phase skills at teaching boundaries.
+- **`dln-syllabus` agent** — Internal curriculum researcher. Dispatched by DLN orchestrator for new domains.
 
 ## Python Linting Hook
 

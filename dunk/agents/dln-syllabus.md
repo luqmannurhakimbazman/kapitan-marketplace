@@ -11,10 +11,10 @@ model: sonnet
 tools:
   - WebSearch
   - WebFetch
-  - mcp__plugin_egg_context7__resolve-library-id
-  - mcp__plugin_egg_context7__query-docs
-  - mcp__plugin_egg_exa__web_search_exa
-  - mcp__plugin_egg_exa__web_search_advanced_exa
+  - mcp__plugin_dunk_context7__resolve-library-id
+  - mcp__plugin_dunk_context7__query-docs
+  - mcp__plugin_dunk_exa__web_search_exa
+  - mcp__plugin_dunk_exa__web_search_advanced_exa
   - mcp__plugin_Notion_notion__notion-fetch
   - mcp__plugin_Notion_notion__notion-update-page
   - mcp__plugin_Notion_notion__notion-search

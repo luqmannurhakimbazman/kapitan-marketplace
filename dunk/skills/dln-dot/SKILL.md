@@ -154,7 +154,7 @@ syllabus_updates:
 ```
 - Any queued writes from previous failed syncs
 
-**On agent return** — follow the learner-generated checkpoint, plan adjustment, calibration-driven adjustment, and Notion failure handling protocols in `@${CLAUDE_PLUGIN_ROOT}/egg/skills/dln/references/sync-protocol.md`.
+**On agent return** — follow the learner-generated checkpoint, plan adjustment, calibration-driven adjustment, and Notion failure handling protocols in `@${CLAUDE_PLUGIN_ROOT}/skills/dln/references/sync-protocol.md`.
 
 ### 2. Concept Delivery
 
