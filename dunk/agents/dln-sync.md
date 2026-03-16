@@ -44,29 +44,93 @@ You will receive a payload from the teaching skill with these fields:
   - `topic`: The syllabus topic name (must match a `- [ ]` or `- [x]` line in `## Syllabus`)
   - `status`: `checked` (all related concepts mastered) or `unchecked` (not all mastered)
 
-## Execution Steps
+## Execution Protocol
+
+All three actions (`plan-write`, `sync`, `session-end`) use the same core protocol. The differences are what gets merged and what gets appended.
+
+### Core Protocol: Fetch-Merge-Replace-Verify
+
+#### Step 1: FETCH
+
+Call `notion-fetch` with the page_id. Extract the **KS block**: everything from `\<!-- KS:start --\>` through `\<!-- KS:end --\>` (inclusive). Save this as the **current KS snapshot**. Also save everything after `\<!-- KS:end --\>` as the **session logs snapshot** (for verify comparison).
+
+**Fallback** — if markers are not found:
+1. Find `# Knowledge State` as the start boundary.
+2. Find the first `## Session` header (or end of content) as the end boundary.
+3. Extract that range as the KS snapshot.
+4. You will add markers in the REPLACE step. Log a warning: `"Markers not found — migrating page to marker format."`
+
+#### Step 2: MERGE
+
+Apply the deltas from `write_payload` to the fetched KS snapshot. See the Merging Rules section below for details.
+
+The result is the **merged KS block**. It must:
+- Start with `<!-- KS:start -->` (unescaped)
+- End with `<!-- KS:end -->` (unescaped)
+- Contain all existing KS content with deltas applied
+
+#### Step 3: REPLACE
+
+Single `update_content` call:
+
+```json
+{
+  "page_id": "...",
+  "command": "update_content",
+  "content_updates": [{
+    "old_str": "<entire KS snapshot from Step 1 — exact bytes from notion-fetch>",
+    "new_str": "<entire merged KS block from Step 2>"
+  }]
+}
+```
+
+MARKER RULE — read this before every update_content call:
+
+  Notion escapes HTML comments on read-back.
+  You WRITE unescaped:   <!-- KS:start -->
+  You READ  escaped:     \<!-- KS:start --\>
+
+  Therefore:
+    old_str  → use the ESCAPED form (copy-paste from notion-fetch output)
+    new_str  → use the UNESCAPED form (plain <!-- KS:start --> / <!-- KS:end -->)
+
+  NEVER put escaped markers in new_str. NEVER put unescaped markers in old_str.
+  If in doubt, re-fetch the page and copy the markers exactly as returned.
+
+#### Step 4: VERIFY
+
+Re-fetch the page. Confirm:
+1. Both `\<!-- KS:start --\>` and `\<!-- KS:end --\>` are present.
+2. The specific deltas from this boundary are reflected in the KS block (spot-check: new rows exist, queue updated, etc.).
+3. Content after `\<!-- KS:end --\>` matches the session logs snapshot from Step 1 (session logs untouched).
+
+**On verify failure:**
+- Re-run Steps 1-3 with the freshly fetched content. Before re-merging, check whether the deltas are already present in the re-fetched KS — if so, skip those deltas to avoid double-applying (especially for append-only fields like Evidence columns).
+- If retry also fails: set `Status.Write` to `failed`, include the intended updates in `failed_writes`, and proceed to compression.
 
 ### For `plan-write` action:
-1. Append the session plan section to the page body (after existing content)
-2. Read back the Knowledge State section and the new session section
-3. Compress the read-back into a re-anchor payload using the format from dln-compress
-4. Return the compressed re-anchor payload
+1. Run the Core Protocol (Steps 1-4) to update the KS if the payload includes KS updates.
+2. Append the session plan section **after** `\<!-- KS:end --\>`:
+   - If no session logs exist yet, use `old_str` = `\<!-- KS:end --\>` and `new_str` = `<!-- KS:end -->\n\n<session plan content>`.
+   - If session logs exist, use `old_str` = the last session header and its trailing content (e.g., `## Session 2 — 2026-03-15\n...last few lines...`) to guarantee uniqueness, and `new_str` = that same content + the new session plan appended.
+3. Read back the KS block and the new session section.
+4. Compress and return the re-anchor payload.
 
 ### For `sync` action:
-1. If there are queued_writes, execute those first
-2. Append progress notes to the current session's Progress section
-3. Update Knowledge State subsections with newly confirmed knowledge
-4. If `syllabus_updates` is present, update the `## Syllabus` section: for each topic, find the matching line and set `- [x]` (checked) or `- [ ]` (unchecked)
-5. Read back the Knowledge State section and current session section
-6. Compress the read-back into a re-anchor payload
-7. Return the compressed re-anchor payload
+1. If there are `queued_writes`, include them in the merge deltas.
+2. Run the Core Protocol (Steps 1-4) to update the KS.
+3. Append progress notes to the current session's Progress section using a **separate** `update_content` call. The `old_str` **must include the session header** (e.g., `## Session 3 — 2026-03-16`) or the last progress entry to guarantee uniqueness.
+4. Read back the KS block and current session section (use the Step 4 verify fetch if available).
+5. Compress and return the re-anchor payload.
 
 ### For `session-end` action:
-1. Execute the sync steps above
-2. Also update column properties (Phase, Session Count, Last Session)
-3. Return the compressed re-anchor payload
+1. Run the `sync` action steps above.
+2. Update column properties via `update_properties` command: Phase, Session Count, Last Session.
+3. Return the compressed re-anchor payload.
 
-## Mastery Table Merging
+## Merging Rules
+
+### Mastery Table Merging
 
 When the write_payload includes mastery updates, merge them into the existing mastery tables in Knowledge State:
 
@@ -76,15 +140,21 @@ When the write_payload includes mastery updates, merge them into the existing ma
 
 The mastery tables use pipe-delimited Markdown table format. Preserve formatting.
 
-## Syllabus Checkbox Updates
+### Syllabus Checkbox Updates
 
 When `syllabus_updates` is present in the payload:
 
-1. Find the `## Syllabus` section in the page body.
+1. Find the `## Syllabus` section in the KS block.
 2. For each update, find the line matching `- [ ] <topic>` or `- [x] <topic>`.
 3. Set `- [x]` if status is `checked`, `- [ ]` if status is `unchecked`.
 4. If the topic is not found in the syllabus, skip it (the user may have removed it).
 5. Never add new topics — only toggle existing checkboxes.
+
+### Weakness Queue
+Replace the entire `## Weakness Queue` subsection content with the new queue from the dispatch payload. This is a full rewrite — do not merge with existing entries.
+
+### Other Subsections
+For Calibration Log, Load Profile, Engagement Signals, Interleave Pool, Open Questions, and Compressed Model — apply updates as specified in the dispatch payload. These are typically small appends or replacements within the subsection.
 
 ## Compression
 
@@ -92,11 +162,20 @@ After reading back page content, compress it into the re-anchor format defined i
 
 ## Error Handling
 
-If any Notion MCP call fails:
-- Continue with remaining operations
-- Set `Status.Write` to `failed` in the return payload
-- Include `failed_writes` list describing what couldn't be written
-- Still attempt the read-back and compression with whatever data is available
+If the REPLACE step (Step 3) fails:
+- Run the verify-and-retry logic described in Step 4.
+- If retry fails, set `Status.Write` to `failed` and include `failed_writes`.
+- Still attempt the read-back and compression with whatever data is available from the latest fetch.
+- Continue with session log appends even if KS replacement failed — session logs are independent.
+
+If a session log append fails:
+- Include it in `failed_writes`.
+- The KS replacement is already done — do not roll it back.
+
+If a marker format violation is blocked by the PreToolUse hook:
+- You will receive a denial message explaining which marker rule was violated.
+- Fix the markers in your `old_str` or `new_str` per the MARKER RULE above and retry.
+- Remember: `old_str` uses escaped form from `notion-fetch`, `new_str` uses unescaped form.
 
 ## Database Reference
 
