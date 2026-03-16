@@ -62,7 +62,7 @@ Also provide a concrete progress count if the learner has prior sessions:
 
 ### 1a. Session Plan Write
 
-Before any teaching begins, **dispatch the `dln-sync` agent** with action `plan-write`. Include `session_number: <Session Count + 1>` in the dispatch payload, along with the following plan content:
+Before any teaching begins, write the session plan to Notion. If the Knowledge State has existing content (Session Count > 0), follow the full merge protocol in `@${CLAUDE_PLUGIN_ROOT}/skills/dln/references/merge-protocol.md` with action `plan-write`. If this is the first session (Session Count = 0, empty KS), dispatch `dln-sync` directly with action `plan-write` (no `merged_ks` needed). Include `session_number: <Session Count + 1>` and the following plan content:
 
 ```
 ---
@@ -116,7 +116,7 @@ The purpose is not assessment — it is a learning event. Retrieving previously 
    - Spend the first teaching segment re-delivering forgotten concepts using a *different* analogy than the original (re-reading the same explanation does not help — the new analogy forces deeper processing)
    - Include a plan adjustment in the next `dln-sync` dispatch
 
-7. **Dispatch `dln-sync`** with action `sync` after the retrieval warm-up completes. Include retrieval results in the progress notes:
+7. **Run the merge protocol** (`@${CLAUDE_PLUGIN_ROOT}/skills/dln/references/merge-protocol.md`) with action `replace` after the retrieval warm-up completes. Include retrieval results in the progress notes:
 
 ```
 - Retrieval warm-up: [N/M] concepts recalled. Forgotten: [list]. Chain [X→Y]: [accurate/partial/failed]. Retrieval score: [N%].
@@ -125,14 +125,13 @@ The purpose is not assessment — it is a learning event. Retrieving previously 
 
 ### Sync Loop (runs at every teaching boundary)
 
-After each of the following boundaries, **dispatch a fresh `dln-sync` agent** with action `sync`:
+After each of the following boundaries, **run the merge protocol** in `@${CLAUDE_PLUGIN_ROOT}/skills/dln/references/merge-protocol.md` with action `replace`:
 - After each concept batch (2-3 concepts) + comprehension check
 - After each chain explain-back
 - After each worked example
 - Before and after the phase gate
 
-**Dispatch payload** — include in the agent prompt:
-- `session_number`: current session number (Session Count + 1)
+**Boundary outcomes** — gather these before running the merge protocol:
 - Progress notes to append (append-only, never edit existing blocks):
 ```
 - Concept [X] — delivered, comprehension check: [pass/partial/fail]. [Brief note on learner's response.]
@@ -141,18 +140,7 @@ After each of the following boundaries, **dispatch a fresh `dln-sync` agent** wi
 ```
 - Knowledge State updates: newly confirmed concepts for `## Concepts`, newly built chains for `## Chains`
 - Weakness Queue rebuild: [full updated queue reflecting mastery changes this boundary]
-- Syllabus updates: if any concepts changed to `mastered` this boundary, check whether all concepts sharing that `Syllabus Topic` are now mastered. If so, include in the dispatch:
-```
-syllabus_updates:
-  - topic: "[topic name]"
-    status: "checked"
-```
-If a concept was downgraded from `mastered` and its syllabus topic was previously checked, include:
-```
-syllabus_updates:
-  - topic: "[topic name]"
-    status: "unchecked"
-```
+- Syllabus updates: if any concepts changed to `mastered` this boundary, check whether all concepts sharing that `Syllabus Topic` are now mastered. If so, include `syllabus_updates` in the JSON payload.
 - Any queued writes from previous failed syncs
 
 **On agent return** — follow the learner-generated checkpoint, plan adjustment, calibration-driven adjustment, and Notion failure handling protocols in `@${CLAUDE_PLUGIN_ROOT}/skills/dln/references/sync-protocol.md`.
@@ -402,7 +390,7 @@ Include in the `session-end` dispatch to `dln-sync`.
 
 ## Notion Write-Back
 
-Most write-back happens continuously via `dln-sync` dispatches during the sync loop. At session end, dispatch `dln-sync` one final time with action `session-end`. Include `session_number: <Session Count + 1>` in the dispatch payload, along with:
+Most write-back happens continuously via the merge protocol during the sync loop. At session end, run the merge protocol one final time with action `replace-end`. Include `session_number: <Session Count + 1>`, along with:
 
 | Target | Field | Action |
 |--------|-------|--------|
