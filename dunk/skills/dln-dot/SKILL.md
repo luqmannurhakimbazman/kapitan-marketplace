@@ -62,7 +62,7 @@ Also provide a concrete progress count if the learner has prior sessions:
 
 ### 1a. Session Plan Write
 
-Before any teaching begins, **dispatch the `dln-sync` agent** with action `plan-write` and the following plan content:
+Before any teaching begins, **dispatch the `dln-sync` agent** with action `plan-write`. Include `session_number: <Session Count + 1>` in the dispatch payload, along with the following plan content:
 
 ```
 ---
@@ -132,6 +132,7 @@ After each of the following boundaries, **dispatch a fresh `dln-sync` agent** wi
 - Before and after the phase gate
 
 **Dispatch payload** — include in the agent prompt:
+- `session_number`: current session number (Session Count + 1)
 - Progress notes to append (append-only, never edit existing blocks):
 ```
 - Concept [X] — delivered, comprehension check: [pass/partial/fail]. [Brief note on learner's response.]
@@ -401,7 +402,7 @@ Include in the `session-end` dispatch to `dln-sync`.
 
 ## Notion Write-Back
 
-Most write-back happens continuously via `dln-sync` dispatches during the sync loop. At session end, dispatch `dln-sync` one final time with action `session-end` including:
+Most write-back happens continuously via `dln-sync` dispatches during the sync loop. At session end, dispatch `dln-sync` one final time with action `session-end`. Include `session_number: <Session Count + 1>` in the dispatch payload, along with:
 
 | Target | Field | Action |
 |--------|-------|--------|

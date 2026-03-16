@@ -23,7 +23,7 @@ The learner may feel they are going backwards (their model was "fine" before str
 
 ### 0. Session Plan Write
 
-Before asking for the learner's model, **dispatch the `dln-sync` agent** with action `plan-write` and the following plan content:
+Before asking for the learner's model, **dispatch the `dln-sync` agent** with action `plan-write`. Include `session_number: <Session Count + 1>` in the dispatch payload, along with the following plan content:
 
 ```
 ---
@@ -62,6 +62,7 @@ After each of the following boundaries, **dispatch a fresh `dln-sync` agent** wi
 - After the transfer test (Step 5)
 
 **Dispatch payload** — include in the agent prompt:
+- `session_number`: current session number (Session Count + 1)
 - Progress notes to append (append-only):
 ```
 - State model captured: "[verbatim model]"
@@ -298,7 +299,7 @@ Network is the terminal phase. There is no gate to pass. The sync loop tracks th
 
 ## Notion Write-Back
 
-Most write-back happens continuously via `dln-sync` dispatches. At session end, dispatch `dln-sync` with action `session-end` including:
+Most write-back happens continuously via `dln-sync` dispatches. At session end, dispatch `dln-sync` with action `session-end`. Include `session_number: <Session Count + 1>` in the dispatch payload, along with:
 
 | Target | Field | Action |
 |--------|-------|--------|

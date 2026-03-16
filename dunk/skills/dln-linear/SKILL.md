@@ -39,7 +39,7 @@ Never frame abstraction difficulty as a learner deficit. Frame it as a feature o
 
 ### Step 0: Session Plan Write
 
-Before any teaching begins, **dispatch the `dln-sync` agent** with action `plan-write` and the following plan content:
+Before any teaching begins, **dispatch the `dln-sync` agent** with action `plan-write`. Include `session_number: <Session Count + 1>` in the dispatch payload, along with the following plan content:
 
 ```
 ---
@@ -111,6 +111,7 @@ After each of the following boundaries, **dispatch a fresh `dln-sync` agent** wi
 - Before and after the phase gate
 
 **Dispatch payload** — include in the agent prompt:
+- `session_number`: current session number (Session Count + 1)
 - Progress notes to append (append-only):
 ```
 - Cross-pollination [Chain A vs Chain B] — learner identified [shared structure / missed it]. Precision: [vague/structural/transferable].
@@ -389,7 +390,7 @@ Include in the `session-end` dispatch to `dln-sync`.
 
 ## 5. Notion Write-Back
 
-Most write-back happens continuously via `dln-sync` dispatches. At session end, dispatch `dln-sync` with action `session-end` including:
+Most write-back happens continuously via `dln-sync` dispatches. At session end, dispatch `dln-sync` with action `session-end`. Include `session_number: <Session Count + 1>` in the dispatch payload, along with:
 
 | Target | Field | Action |
 |--------|-------|--------|
