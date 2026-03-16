@@ -24,7 +24,7 @@ The learner generating the summary is a retrieval event that strengthens retenti
 
 ## Plan Adjustment
 
-If the re-anchor payload reveals drift from the original plan, include a **plan adjustment** in the next `dln-sync` dispatch to append:
+If the re-anchor payload reveals drift from the original plan, include a **plan adjustment** in the next merge protocol run to append:
 
 ```
 ### Plan Adjustment — [reason]
@@ -58,30 +58,16 @@ When the Calibration Log shows a pattern across 2+ sessions, adjust teaching str
 
 ---
 
-## Syllabus Updates
-
-Phase skills (primarily dln-dot) may include `syllabus_updates` in their dispatch payload when concept mastery changes affect syllabus topic coverage. The `dln-sync` agent should process these updates by checking/unchecking the corresponding syllabus topic checkboxes in the `## Syllabus` section of the page body.
-
-**Payload format:**
-
-```
-syllabus_updates:
-  - topic: "[topic name]"
-    status: "checked"    # all concepts under this topic are mastered
-  - topic: "[topic name]"
-    status: "unchecked"  # a concept was downgraded, topic no longer fully mastered
-```
-
-**Processing rules:**
-- `"checked"` → find the matching `- [ ] Topic` line in the Syllabus section and change it to `- [x] Topic`
-- `"unchecked"` → find the matching `- [x] Topic` line and change it to `- [ ] Topic`
-- If the topic name does not match any syllabus entry, log a warning in the progress notes but do not fail
-
----
-
 ## Notion Failure Handling
 
-If `dln-sync` returns with `Status.Write: failed`:
+The merge protocol involves two dispatches: `fetch` then `replace`. Failures can occur at either step.
+
+**If `fetch` fails** (dln-sync returns error or empty KS):
+1. Log the failure in-conversation.
+2. Skip the merge — you cannot merge without a KS block.
+3. Dispatch `replace` with progress notes only (no `merged_ks`). Session log appends are independent.
+
+**If `replace` returns with `Status.Write: failed`:**
 1. Log the intended update in-conversation as a visible checkpoint.
-2. Queue the failed writes — include them in the next `dln-sync` dispatch payload. (This queue exists only in conversation context.)
-3. If 3+ consecutive dispatches return failure, announce to the learner that persistence is temporarily offline. Continue with in-conversation checkpoints only. Attempt a single bulk write-back via `dln-sync` at session end.
+2. Queue the failed writes — include them in the next merge protocol run (as `queued_writes`).
+3. If 3+ consecutive dispatches return failure, announce to the learner that persistence is temporarily offline. Continue with in-conversation checkpoints only. Attempt a single bulk write-back at session end.
