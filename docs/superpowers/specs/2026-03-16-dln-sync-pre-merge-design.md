@@ -47,6 +47,12 @@ Phase Skill (parent)              dln-sync (subagent)
 - `session-end` action is removed (replaced by `fetch` + parent merge + `replace-end`)
 - `plan-write` stays but now receives pre-merged KS instead of prose
 
+## plan-write and the two-dispatch sequence
+
+`plan-write` with KS updates requires a preceding `fetch` dispatch (to get the current KS for merging). `plan-write` without KS updates (e.g., first session with empty KS) is a single dispatch — no `fetch` needed.
+
+All actions (`fetch`, `replace`, `replace-end`, `plan-write`) perform their own internal page fetch. The `fetch` dispatch exists solely to give the parent the raw KS block for merge input — it does not eliminate `plan-write`'s internal fetch.
+
 ## New shared reference: merge-protocol.md
 
 Location: `dunk/skills/dln/references/merge-protocol.md`
@@ -55,9 +61,11 @@ Contains (extracted from dln-sync):
 - Normalizer Schema (JSON format for merge payloads)
 - Normalizer examples
 - Normalization rules (which fields need existing KS for full-rewrite vs. append-only)
-- Parent-side merge sequence (the 10-step procedure)
+- Parent-side merge sequence (steps: dispatch fetch → construct JSON → write temp files → run ks-merge.py → dispatch replace → clean up temp files on success)
 
 All three phase skills reference this file at every sync boundary instead of sending prose to dln-sync. The phase skills construct the JSON payload; the shared reference tells them how.
+
+**Prose-to-JSON transition:** Phase skills currently describe updates in prose ("Concept X: status → mastered. Evidence: ..."). These prose descriptions stay as-is — they describe *what* changed during teaching. The merge-protocol teaches the phase skill model *how* to convert that prose into valid JSON matching the normalizer schema. The normalizer examples (moved from dln-sync) serve as few-shot guidance for this conversion. Temp file cleanup is the parent's responsibility — the merge-protocol includes explicit cleanup steps.
 
 ## Phase skill changes
 
@@ -83,7 +91,7 @@ The phase skills still describe *what* changed (mastery updates, weakness queue,
 
 **Tools removed:** `Bash`, `Write`, `Read`
 
-**Permission mode:** `bypassPermissions` reverts to `dontAsk` (only MCP tools needed)
+**Permission mode:** `bypassPermissions` reverts to `dontAsk` (cosmetic — neither value affects subagent behavior, but `dontAsk` is more accurate for an MCP-only agent)
 
 ## Unchanged in dln-sync
 
@@ -119,6 +127,7 @@ The phase skills still describe *what* changed (mastery updates, weakness queue,
 | `dunk/skills/dln-dot/SKILL.md` | Replace dispatch instructions with merge-protocol reference |
 | `dunk/skills/dln-linear/SKILL.md` | Replace dispatch instructions with merge-protocol reference |
 | `dunk/skills/dln-network/SKILL.md` | Replace dispatch instructions with merge-protocol reference |
-| `dunk/skills/dln/references/sync-protocol.md` | Minor updates to reference new action names |
+| `dunk/skills/dln/references/sync-protocol.md` | Remove Syllabus Updates section (now handled by ks-merge.py via JSON payload). Rewrite Notion Failure Handling for two-dispatch model (distinguish fetch failures from replace failures). Update dispatch references to new action names. |
+| `dunk/references/merge-payload-schema.md` | Update framing — normalizer ownership moves from dln-sync to phase skills (parent). Schema itself unchanged. |
 | `dunk/hooks/hooks.json` | Remove Bash matcher entry |
 | `dunk/scripts/block-inline-scripts.sh` | **Delete** |
