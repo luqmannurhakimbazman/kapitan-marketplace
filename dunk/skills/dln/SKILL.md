@@ -70,7 +70,7 @@ Each of Concepts, Chains, and Factors uses a mastery tracking table with columns
 - **Evidence:** Compact append-only log of assessment events (e.g., "Recall pass (S2), chain trace fail (S3)"), each tagged with session number.
 - **Last Tested:** Date of most recent assessment event.
 
-Mastery status is updated by phase skills at every teaching boundary via the `dln-sync` agent. The orchestrator does not interpret mastery data — it passes the full page body to the phase skill, which reads and acts on the tables.
+Mastery status is updated by phase skills at every teaching boundary via the `dln-sync` agent. The orchestrator does not interpret mastery data — it passes the extracted Knowledge State block to the phase skill, which reads and acts on the tables.
 
 **Session Logs** — Dated sections appended below Knowledge State by each phase skill. Contains session plan, progress notes, and plan adjustments. Old session logs are kept for audit but are NOT read back during mid-session syncs.
 
@@ -264,11 +264,13 @@ Pass the syllabus content to the phase skill alongside the page body (it's alrea
 
 ### Step 4: Load Context and Route
 
-Read the **full page body** of the domain's Notion page. Pass it to the phase skill along with the Phase and Session Count from column properties.
+Read the **full page body** of the domain's Notion page, then **extract only the Knowledge State block** to pass to the phase skill. This prevents old session logs from consuming context tokens.
 
-The page body includes the `## Syllabus` section. Phase skills read it directly — no separate syllabus parameter is needed.
+**Extraction rule:** Find the `<!-- KS:start -->` and `<!-- KS:end -->` boundary markers. Extract everything between them (inclusive of markers). Discard everything after `<!-- KS:end -->` — that's session logs from prior sessions.
 
-The phase skill ignores sections irrelevant to its phase — no phase-specific filtering at the orchestrator level.
+If the markers are missing (pre-marker profile), pass the full page body as-is and let `dln-sync` add markers on its first sync.
+
+The extracted KS block includes the `## Syllabus` section. Phase skills read it directly — no separate syllabus parameter is needed.
 
 | Phase | Route To |
 |-------|----------|
@@ -280,7 +282,7 @@ The phase skill ignores sections irrelevant to its phase — no phase-specific f
 
 Pass the following context to the phase skill:
 1. **Domain name**
-2. **Page body content** (full page body from Step 4)
+2. **Knowledge State block** (extracted KS block from Step 4, not the full page body)
 3. **Session count** (from Session Count column property — authoritative source)
 4. **Page reference** (so the phase skill can write back to the page body)
 
