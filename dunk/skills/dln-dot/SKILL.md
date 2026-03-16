@@ -373,7 +373,7 @@ Provide concrete progress metrics:
 
 **5. Confidence Self-Assessment:** Ask the learner to rate 1-5 on each concept covered. Which is most/least confident? Use the calibration templates from `@references/dot-protocol.md` (section 8).
 
-**6. Confusion Surfacing:** "What are you still confused about?" Validate confusion honestly — do NOT reassure. Record responses for `## Calibration Log` and `## Open Questions` in the session-end sync dispatch.
+**6. Confusion Surfacing:** "What are you still confused about?" Validate confusion honestly — do NOT reassure. Record responses for `## Calibration Log` and `## Open Questions` in the `replace-end` merge protocol run.
 
 **7. Update Engagement Signals:**
 Set Momentum based on session outcome:
@@ -381,7 +381,7 @@ Set Momentum based on session outcome:
 - Normal session with mixed results → `neutral`
 - Session ended early due to frustration, or 3+ consecutive struggles occurred → `fragile`
 
-Include in the `session-end` dispatch to `dln-sync`.
+Include in the `replace-end` merge protocol run.
 
 ## Meta-Question Layer
 

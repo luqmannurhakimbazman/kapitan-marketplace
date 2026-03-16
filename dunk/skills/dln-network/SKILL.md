@@ -275,9 +275,9 @@ Produce a full summary at session end:
 - **(h) Confusion Surfacing:**
 > "What are you still confused about? What part of your model feels like it's held together with duct tape?"
 
-Record all responses. Include confidence ratings in the `dln-sync` session-end dispatch for `## Calibration Log`. Confusion responses go into `## Open Questions`.
+Record all responses. Include confidence ratings in the `replace-end` merge protocol run for `## Calibration Log`. Confusion responses go into `## Open Questions`.
 
-- **(i) Update Engagement Signals** in the `session-end` dispatch to `dln-sync`. Set Momentum based on session:
+- **(i) Update Engagement Signals** in the `replace-end` merge protocol run. Set Momentum based on session:
   - Multiple successful stress-tests and compression improved → `positive`
   - Normal session with mixed results → `neutral`
   - 3+ consecutive model breaks with frustration signals → `fragile`

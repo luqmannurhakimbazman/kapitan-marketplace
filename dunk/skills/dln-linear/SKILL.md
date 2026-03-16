@@ -363,7 +363,7 @@ At the end of every session:
 **6. Confusion Surfacing:**
 > "What are you still confused about? What connections felt forced or incomplete?"
 
-Record all responses. Include factor confidence ratings in the `dln-sync` session-end dispatch for `## Calibration Log`. Confusion responses go into `## Open Questions`.
+Record all responses. Include factor confidence ratings in the `replace-end` merge protocol run for `## Calibration Log`. Confusion responses go into `## Open Questions`.
 
 Do NOT reassure if they express confusion. Validate it: "That's a real gap — we'll address it next session."
 
@@ -373,7 +373,7 @@ Set Momentum based on session outcome:
 - Normal session with mixed results → `neutral`
 - Session ended early due to frustration, or 3+ consecutive struggles occurred → `fragile`
 
-Include in the `session-end` dispatch to `dln-sync`.
+Include in the `replace-end` merge protocol run.
 
 ---
 

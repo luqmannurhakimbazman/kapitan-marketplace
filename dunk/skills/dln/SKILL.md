@@ -221,7 +221,7 @@ After each session completes (regardless of whether a review protocol ran), comp
 
 **Set Next Review = today + Review Interval (in days).**
 
-Pass the computed Next Review and Review Interval values to the `dln-sync` agent in the `session-end` dispatch as column_updates.
+Pass the computed Next Review and Review Interval values to the `dln-sync` agent in the `replace-end` dispatch as column_updates.
 
 ### Step 3b: Syllabus Check
 
