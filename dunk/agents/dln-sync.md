@@ -228,7 +228,7 @@ KS_EOF
 Call the merge script:
 
 ```bash
-uv run python "${CLAUDE_PLUGIN_ROOT}/scripts/ks-merge.py" /tmp/ks-merge-payload-<...>.json /tmp/ks-merge-ks-<...>.md
+python3 "${CLAUDE_PLUGIN_ROOT}/scripts/ks-merge.py" /tmp/ks-merge-payload-<...>.json /tmp/ks-merge-ks-<...>.md
 ```
 
 If exit 0: the stdout is the merged KS block. Use it as `new_str` in Step 3 (REPLACE).

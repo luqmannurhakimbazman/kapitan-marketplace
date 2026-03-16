@@ -5,12 +5,14 @@ Takes a typed JSON payload and a raw KS block (markdown between markers),
 applies updates deterministically, and outputs the merged KS block to stdout.
 
 Usage:
-    uv run python ks-merge.py [--dry-run] <payload_path> <ks_block_path>
+    python3 ks-merge.py [--dry-run] <payload_path> <ks_block_path>
 
 Exit codes:
     0 — success (merged block on stdout)
     1 — failure (error on stderr)
 """
+
+from __future__ import annotations
 
 import json
 import re
