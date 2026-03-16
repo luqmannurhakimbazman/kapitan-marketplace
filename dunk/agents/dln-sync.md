@@ -15,6 +15,7 @@ tools:
   - mcp__plugin_Notion_notion__notion-update-page
   - mcp__plugin_Notion_notion__notion-search
   - mcp__plugin_Notion_notion__notion-query-database-view
+  - Bash
 skills:
   - dln-compress
 permissionMode: dontAsk
@@ -53,6 +54,140 @@ You will receive a payload from the teaching skill with these fields:
 - **syllabus_updates**: (optional) List of syllabus topic status changes. Each entry has:
   - `topic`: The syllabus topic name (must match a `- [ ]` or `- [x]` line in `## Syllabus`)
   - `status`: `checked` (all related concepts mastered) or `unchecked` (not all mastered)
+  > **Note:** The normalizer consolidates `syllabus_updates` into the merge payload JSON. The merge script handles checkbox toggling — this field no longer bypasses the merge step.
+
+## Normalizer Schema
+
+After FETCH (Step 1), normalize the prose dispatch payload into this JSON structure. All fields are optional — only include fields that have updates from the dispatch.
+
+The normalizer receives BOTH the prose dispatch AND the fetched KS block. Full-rewrite fields (`weakness_queue`, `section_rewrites`) require looking up existing values in the KS block to produce COMPLETE replacement content. Append fields (`mastery_updates`, `section_appends`) only need the prose — the script handles the lookup and merge.
+
+```json
+{
+  "mastery_updates": [
+    {
+      "table": "concepts | chains | factors",
+      "name": "row identifier — exact match against Concept/Chain/Factor column",
+      "status": "not-mastered | partial | mastered",
+      "evidence": "string to append to Evidence column (comma-separated)",
+      "last_tested": "YYYY-MM-DD",
+      "syllabus_topic": "optional — concepts table only"
+    }
+  ],
+  "weakness_queue": [
+    {
+      "priority": 1,
+      "item": "string",
+      "type": "concept | chain | factor",
+      "phase": "Dot | Linear | Network",
+      "severity": "string",
+      "source": "string",
+      "added": "YYYY-MM-DD"
+    }
+  ],
+  "syllabus_updates": [
+    {
+      "topic": "string — must match existing syllabus line",
+      "status": "checked | unchecked"
+    }
+  ],
+  "section_rewrites": {
+    "compressed_model": "COMPLETE replacement text for ## Compressed Model",
+    "open_questions": "COMPLETE replacement text for ## Open Questions",
+    "interleave_pool": "COMPLETE replacement text for ## Interleave Pool"
+  },
+  "subsection_rewrites": {
+    "calibration_trend": "COMPLETE replacement text for ### Calibration Trend"
+  },
+  "section_appends": {
+    "calibration_concept": "pipe-delimited table row (no header) to append to ### Concept-Level Confidence",
+    "calibration_gate": "pipe-delimited table row (no header) to append to ### Gate Predictions",
+    "load_session_history": "pipe-delimited table row (no header) to append to ### Session History"
+  },
+  "load_baseline": {
+    "working_batch_size": "number — observed working batch size",
+    "hint_tolerance": "string — e.g. 'low (needs <=1 hint per concept)'",
+    "recovery_pattern": "string — e.g. 'responds well to different analogies'"
+  },
+  "engagement": {
+    "momentum": "positive | neutral | negative",
+    "consecutive_struggles": 0,
+    "last_celebration": "string",
+    "notes": "string"
+  }
+}
+```
+
+**Rules:**
+- `section_rewrites` targets `##`-level headers. Values must be COMPLETE replacement content — not deltas.
+- `subsection_rewrites` targets `###`-level headers. Same complete-replacement semantics.
+- `weakness_queue` is a full rewrite — the script replaces the entire queue.
+- `syllabus_updates` is consolidated into the merge payload by the normalizer (no longer a standalone input field).
+- `mastery_updates` never delete rows. Existing rows are upserted; new rows are appended.
+
+### Normalizer Examples
+
+**Example 1: Dot phase sync dispatch**
+
+Prose input from dln-dot:
+```
+Progress notes:
+- Concept "Put-Call Parity" — delivered, comprehension check: pass. Learner correctly identified C - P = S - PV(K).
+- Chain "Option Pricing → Put-Call Parity → Synthetic Positions" — built. Traced correctly on first attempt.
+
+Knowledge State updates:
+- Concept "Put-Call Parity" now mastered
+- Chain "Option Pricing → Put-Call Parity → Synthetic Positions" is partial
+- Update weakness queue: remove Put-Call Parity, keep Greeks intuition (priority 1)
+
+syllabus_updates:
+  - topic: "Options Basics"
+    status: "checked"
+```
+
+Expected JSON output:
+```json
+{
+  "mastery_updates": [
+    {"table": "concepts", "name": "Put-Call Parity", "status": "mastered", "evidence": "Comprehension check pass (S4)", "last_tested": "2026-03-16", "syllabus_topic": "Options Basics"},
+    {"table": "chains", "name": "Option Pricing → Put-Call Parity → Synthetic Positions", "status": "partial", "evidence": "Chain trace pass (S4)", "last_tested": "2026-03-16"}
+  ],
+  "weakness_queue": [
+    {"priority": 1, "item": "Greeks intuition", "type": "concept", "phase": "Dot", "severity": "not-mastered", "source": "S3 gap", "added": "2026-03-15"}
+  ],
+  "syllabus_updates": [
+    {"topic": "Options Basics", "status": "checked"}
+  ]
+}
+```
+
+**Example 2: Network phase sync dispatch**
+
+Prose input from dln-network:
+```
+Progress notes:
+- Stress-test 1: "What happens to put-call parity when the underlying pays dividends?" → model broke. Missing dividend adjustment term.
+- Contraction 1: model revised — 45 words → 32 words. Coverage: same.
+
+Knowledge State updates:
+- Replace compressed model with: "Options pricing is arbitrage-enforced replication. Any derivative payoff decomposable into underlying + bonds has a unique price. Put-call parity is the base case; Greeks measure sensitivity to replication inputs."
+- Replace open questions with: "How does continuous dividend yield change the replication argument?"
+- Update engagement: momentum positive, struggles 0
+```
+
+Expected JSON output:
+```json
+{
+  "section_rewrites": {
+    "compressed_model": "Options pricing is arbitrage-enforced replication. Any derivative payoff decomposable into underlying + bonds has a unique price. Put-call parity is the base case; Greeks measure sensitivity to replication inputs.",
+    "open_questions": "- How does continuous dividend yield change the replication argument?"
+  },
+  "engagement": {
+    "momentum": "positive",
+    "consecutive_struggles": 0
+  }
+}
+```
 
 ## Execution Protocol
 
@@ -70,14 +205,40 @@ Call `notion-fetch` with the page_id. Extract the **KS block**: everything from 
 3. Extract that range as the KS snapshot.
 4. You will add markers in the REPLACE step. Log a warning: `"Markers not found — migrating page to marker format."`
 
-#### Step 2: MERGE
+#### Step 2a: NORMALIZE
 
-Apply the deltas from `write_payload` to the fetched KS snapshot. See the Merging Rules section below for details.
+Produce a JSON object conforming to the Normalizer Schema section above. You have access to both the prose dispatch payload and the fetched KS block from Step 1.
 
-The result is the **merged KS block**. It must:
-- Start with `<!-- KS:start -->` (unescaped)
-- End with `<!-- KS:end -->` (unescaped)
-- Contain all existing KS content with deltas applied
+Write the JSON to a temp file and the KS block to another temp file:
+
+```bash
+# Write the JSON payload
+cat > /tmp/ks-merge-payload-<page_id_8chars>-$$-$(date +%s).json << 'PAYLOAD_EOF'
+<your JSON here>
+PAYLOAD_EOF
+
+# Write the KS block
+cat > /tmp/ks-merge-ks-<page_id_8chars>-$$-$(date +%s).md << 'KS_EOF'
+<KS block from Step 1>
+KS_EOF
+```
+
+#### Step 2b: MERGE
+
+Call the merge script:
+
+```bash
+uv run python "${CLAUDE_PLUGIN_ROOT}/scripts/ks-merge.py" /tmp/ks-merge-payload-<...>.json /tmp/ks-merge-ks-<...>.md
+```
+
+If exit 0: the stdout is the merged KS block. Use it as `new_str` in Step 3 (REPLACE).
+
+If exit 1: **hard fail.**
+1. Read stderr for the error message.
+2. Set `Status.Write` to `failed` in the re-anchor payload.
+3. Include `Merge error: "<stderr>"` and the temp file paths in `Debug artifacts`.
+4. Queue the writes for the next boundary.
+5. Skip to compression — do NOT attempt manual merge.
 
 #### Step 3: REPLACE
 
@@ -118,6 +279,15 @@ Re-fetch the page. Confirm:
 - Re-run Steps 1-3 with the freshly fetched content. Before re-merging, check whether the deltas are already present in the re-fetched KS — if so, skip those deltas to avoid double-applying (especially for append-only fields like Evidence columns).
 - If retry also fails: set `Status.Write` to `failed`, include the intended updates in `failed_writes`, and proceed to compression.
 
+**On verify success:**
+Clean up temp files from Steps 2a-2b:
+
+```bash
+rm -f /tmp/ks-merge-payload-<...>.json /tmp/ks-merge-ks-<...>.md
+```
+
+Do NOT clean up on failure — temp files persist for manual inspection.
+
 ### For `plan-write` action:
 
 Let SNAPSHOT = the most recent `notion-fetch` result available at each step.
@@ -150,6 +320,8 @@ Let SNAPSHOT = the most recent `notion-fetch` result available at each step.
 3. Return the compressed re-anchor payload.
 
 ## Merging Rules
+
+> **Note:** These rules are implemented by `ks-merge.py` and executed deterministically. The agent does NOT apply these rules manually — they are documented here as the source of truth for the script's behavior and for maintenance reference.
 
 ### Mastery Table Merging
 
@@ -192,6 +364,22 @@ If the REPLACE step (Step 3) fails:
 If a session log append fails:
 - Include it in `failed_writes`.
 - The KS replacement is already done — do not roll it back.
+
+If the merge script fails (exit 1):
+- The script's stderr contains the error message.
+- Temp files persist at `/tmp/ks-merge-*` for manual inspection.
+- Include in the re-anchor payload:
+  ```
+  ### Status
+  - Write: failed
+  - Failed writes: [list of intended updates from the dispatch]
+  - Merge error: "<stderr message from ks-merge.py>"
+  - Debug artifacts:
+    - Payload: /tmp/ks-merge-payload-<page_id>-<pid>-<timestamp>.json
+    - KS block: /tmp/ks-merge-ks-<page_id>-<pid>-<timestamp>.md
+  ```
+- Do NOT attempt manual merge as fallback — queue writes for the next boundary.
+- Session log appends are still attempted — they are independent of the KS merge.
 
 If a marker format violation is blocked by the PreToolUse hook:
 - You will receive a denial message explaining which marker rule was violated.
