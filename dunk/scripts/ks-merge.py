@@ -261,6 +261,12 @@ def apply_mastery_updates(sections: list, updates: list, dry_run: bool) -> list:
 
         section = sections[idx]
         header_lines, columns, data_rows = parse_table_rows(section.body)
+        if not columns:
+            print(
+                f"Warning: no table header found in ## {section_name}, skipping",
+                file=sys.stderr,
+            )
+            continue
         name_col = columns[0]  # "Concept", "Chain", or "Factor"
         name = update["name"]
 

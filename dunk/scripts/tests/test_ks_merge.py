@@ -497,6 +497,49 @@ def test_missing_section_still_succeeds():
     assert "<!-- KS:end -->" in result.stdout
 
 
+def test_headerless_table_skipped_gracefully():
+    """A section with a headerless table should warn and skip, not crash."""
+    ks_with_headerless = """\
+<!-- KS:start -->
+# Knowledge State
+
+## Concepts
+
+| Concept | Status | Syllabus Topic | Evidence | Last Tested |
+|---------|--------|----------------|----------|-------------|
+| Put-Call Parity | partial | Options Basics | S2 pass | 2026-03-14 |
+
+| FastAPI uvicorn | not-mastered | Infra | Introduced (S4) | 2026-03-18 |
+| Container Misbehaving | not-mastered | Infra | Introduced (S4) | 2026-03-18 |
+
+## Chains
+
+| Chain | Status | Evidence | Last Tested |
+|-------|--------|----------|-------------|
+
+## Factors
+
+| Factor | Status | Evidence | Last Tested |
+|--------|--------|----------|-------------|
+
+<!-- KS:end -->
+"""
+    payload = {
+        "mastery_updates": [
+            {
+                "table": "concepts",
+                "name": "Put-Call Parity",
+                "status": "mastered",
+                "evidence": "Recall pass (S5)",
+                "last_tested": "2026-03-19",
+            }
+        ]
+    }
+    result = run_merge(payload, ks_with_headerless)
+    assert result.returncode == 0
+    assert "| Put-Call Parity | mastered |" in result.stdout
+
+
 def test_combined_operations():
     """All operations in a single payload should work together."""
     payload = {
